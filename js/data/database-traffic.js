@@ -45,8 +45,8 @@
  * }
  * encodeURIComponent : ensures correct unicode-encoding of string; %22 means "; mandatory for Firebase.
  */
-async function getFirebaseData(category, queryString='') {
-  let baseUrl = `https://join-474-default-rtdb.europe-west1.firebasedatabase.app/${category}.json`;
+async function getFirebaseData(category, queryString = '') {
+  let baseUrl = `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${category}.json`;
   let url = baseUrl + queryString;
   try {
     const response = await fetch(url);
@@ -83,14 +83,14 @@ let currentCategory = null;
 
 const objectFields = [
   [
-    {id: "new-name", key: "displayName"},
-    {id: "new-email", key: "email"},
-    {id: "password-first" , key: "password"}
+    { id: "new-name", key: "displayName" },
+    { id: "new-email", key: "email" },
+    { id: "password-first", key: "password" }
   ],
   [
-    {id: "newContactName", key: "name"},
-    {id: "newContactEmail", key: "email"},
-    {id: "newContactPhone", key: "phone"}
+    { id: "newContactName", key: "name" },
+    { id: "newContactEmail", key: "email" },
+    { id: "newContactPhone", key: "phone" }
   ]
 ]
 
@@ -145,7 +145,7 @@ function setDataContainer(requestedCategory) {
  * @returns selected objectFields.
  */
 function chooseFieldsMap(requestedCategory) {
-  if(requestedCategory == "users") 
+  if (requestedCategory == "users")
     return objectFields[0];
   else if (requestedCategory == "contacts")
     return objectFields[1];
@@ -198,7 +198,7 @@ function loopOverInputs(fieldMap, obj) {
  * @returns complete new object.
  */
 function specificEntries(requestedCategory, obj) {
-  if(requestedCategory == "users") {
+  if (requestedCategory == "users") {
     obj.associatedContacts = "";
     obj.email = obj.email.toLowerCase();
     return obj;
@@ -245,7 +245,7 @@ function setNextId(category) {
  * @returns last existing (or initialized) key (string).
  */
 function getLastKey(category) {
-  if(!currentDataContainer || Object.keys(currentDataContainer).length == 0) {
+  if (!currentDataContainer || Object.keys(currentDataContainer).length == 0) {
     console.log("you initialized a new category: ", category);
     return `${category}-000`
   } else {
@@ -282,7 +282,7 @@ function determineStoragePath(pushObjectId, requestedCategory) {
     path = `${requestedCategory}/${pushObjectId}`;
     fetchedData = fetchedData || {};
   }
-  console.log("path: ", path, "upated local data: " , fetchedData);
+  console.log("path: ", path, "upated local data: ", fetchedData);
   return path;
 }
 
@@ -299,7 +299,7 @@ function updateLocalData(localObject) {
  * @param {object} data - object containing all taks details.
  */
 async function saveToFirebase(path, data) {
-  const url = `https://join-474-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
+  const url = `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
   try {
     const response = await fetch(url, {
       method: data === null ? "DELETE" : "PUT",
@@ -317,8 +317,8 @@ async function saveToFirebase(path, data) {
 }
 
 async function getKeys() {
-let myData = await getFirebaseData('users', '?shallow=true');
-console.log('keys: ', myData);
+  let myData = await getFirebaseData('users', '?shallow=true');
+  console.log('keys: ', myData);
 }
 
 // getKeys();

@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Maintenance</title>
 </head>
+
 <body>
   <h1>Running Firebase Cleanup</h1>
-  <p >Click the button below to reset the <strong>join-474 Firebase</strong> instance.</p>
+  <p>Click the button below to reset the <strong>join-474 Firebase</strong> instance.</p>
   <p style="color: red"><strong>This action is destructive and cannot be undone.</strong></p>
   <p><strong>Open the console to see the deleted entries.</strong></p>
   <p>After cleanup, the database will contain:</p>
   <ul>
-    <li> <p><code>users</code>: 6 entries</p> </li>
-    <li> <p><code>tasks</code>: 6 entries</p> </li>
-    <li> <p><code>contacts</code>: 12 entries</p> </li>
+    <li>
+      <p><code>users</code>: 6 entries</p>
+    </li>
+    <li>
+      <p><code>tasks</code>: 6 entries</p>
+    </li>
+    <li>
+      <p><code>contacts</code>: 12 entries</p>
+    </li>
   </ul>
   <p>To change cleanup behavior (e.g., entry count), modify the relevant limits in the cleanup functions below.</p>
 
@@ -29,7 +37,7 @@
     }
 
     async function getFirebaseData(path = "") {
-      const url = 'https://join-474-default-rtdb.europe-west1.firebasedatabase.app/' + path + '.json';
+      const url = 'https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/' + path + '.json';
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -45,7 +53,7 @@
     }
 
     async function saveToFirebase(path, data) {
-      const url = `https://join-474-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
+      const url = `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
       try {
         const response = await fetch(url, {
           method: data === null ? "DELETE" : "PUT",
@@ -64,41 +72,42 @@
     }
 
     async function cleanUpFirebaseDatabase(localData) {
-    const userEntries = localData.users || {};
-    const taskEntries = localData.tasks || {};
-    const contactEntries = localData.contacts || {};
+      const userEntries = localData.users || {};
+      const taskEntries = localData.tasks || {};
+      const contactEntries = localData.contacts || {};
 
-    // helper function to extract number suffix
-    const extractNum = (key, prefix) => {
-      const match = key.match(new RegExp(`^${prefix}-(\\d+)$`));
-      return match ? parseInt(match[1], 10) : null;
-    };
+      // helper function to extract number suffix
+      const extractNum = (key, prefix) => {
+        const match = key.match(new RegExp(`^${prefix}-(\\d+)$`));
+        return match ? parseInt(match[1], 10) : null;
+      };
 
-    // 1. clean up users
-    for (const key in userEntries) {
-      const num = extractNum(key, "demoUser");
-      if (num && num > 6) {
-        await saveToFirebase(`users/${key}`, null);
+      // 1. clean up users
+      for (const key in userEntries) {
+        const num = extractNum(key, "demoUser");
+        if (num && num > 6) {
+          await saveToFirebase(`users/${key}`, null);
+        }
       }
-    }
 
-    // 2. clean up tasks
-    for (const key in taskEntries) {
-      const num = extractNum(key, "task");
-      if (num && num > 6) {
-        await saveToFirebase(`tasks/${key}`, null);
+      // 2. clean up tasks
+      for (const key in taskEntries) {
+        const num = extractNum(key, "task");
+        if (num && num > 6) {
+          await saveToFirebase(`tasks/${key}`, null);
+        }
       }
-    }
 
-    // 3. clean up contacts
-    for (const key in contactEntries) {
-      const num = extractNum(key, "contact");
-      if (num && num > 12) {
-        await saveToFirebase(`contacts/${key}`, null);
+      // 3. clean up contacts
+      for (const key in contactEntries) {
+        const num = extractNum(key, "contact");
+        if (num && num > 12) {
+          await saveToFirebase(`contacts/${key}`, null);
+        }
       }
+      console.log("Firebase cleanup completed.");
     }
-    console.log("Firebase cleanup completed.");
-  }
   </script>
 </body>
+
 </html>
