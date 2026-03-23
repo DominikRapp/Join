@@ -249,8 +249,6 @@ body {
   flex-grow: 1;
   align-items: flex-start;
   max-width: 1440px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--lightBlue) var(--dark);
 }
 
 

@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* overflow: hidden; */
 }
 
 .taskCardWrapper {
@@ -152,7 +153,6 @@
   height: clamp(4px, 0.7vw, 8px);
   background-color: var(--borderGrey);
   border-radius: 9999px;
-  overflow: hidden;
 }
 
 .progress-bar-fill {

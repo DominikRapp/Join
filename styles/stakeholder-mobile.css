@@ -1,0 +1,137 @@
+@media (max-width: 1350px) {
+
+    .request-shell {
+        width: auto;
+    }
+
+    .request-status-bar {
+        width: 800px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 44px;
+    }
+
+    .request-layout {
+        width: 100%;
+        max-width: 850px;
+        gap: 56px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .request-lead {
+        font-size: 16px;
+        margin-bottom: 28px;
+    }
+
+    .request-text {
+        font-size: 16px;
+    }
+
+    .request-image {
+        width: 70%;
+    }
+
+    .request-status-bar {
+        width: 700px;
+    }
+
+    .stakeholder-d-none-mobile {
+        display: none;
+    }
+
+    .stakeholder-d-show-mobile {
+        display: flex;
+    }
+
+    .request-alert-text {
+        font-size: 16px;
+    }
+
+    .request-status-bar {
+        width: 100%;
+        max-width: 700px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "title back"
+            "counter .";
+        align-items: center;
+        row-gap: 8px;
+        column-gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .request-status-bar .request-title-area {
+        grid-area: title;
+        justify-content: flex-start;
+        margin-bottom: 0;
+    }
+
+    .request-status-bar .request-back-button {
+        grid-area: back;
+        justify-self: end;
+    }
+
+    .request-status-bar .request-counter {
+        grid-area: counter;
+        justify-content: flex-start;
+    }
+
+    .request-status-bar .request-counter-text {
+        text-align: left;
+    }
+
+    .request-layout {
+        justify-content: center;
+    }
+
+    .request-title {
+        font-size: 32px;
+    }
+
+    .request-counter-text {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 769px) {
+    .request-shell {
+        margin-top: 16px;
+        width: 100%;
+        padding: 8px;
+    }
+
+    .request-button {
+        min-width: 138px;
+        min-height: 40px;
+        padding: 10px 16px;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    .request-text-group {
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+
+    .request-lead {
+        margin-bottom: 8px;
+    }
+
+    .request-status-bar {
+        margin-bottom: 8px;
+    }
+
+    .request-image {
+        width: 50%;
+    }
+
+}
+
+@media (max-width: 386px) {
+    .request-alert-box {
+        padding: 8px 8px;
+    }
+}

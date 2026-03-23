@@ -1,102 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Coordinate your team's work with our Kanban app “join-474” and keep track of your project at all times."/>
-    <title>Login</title>
-    <link id="favicon" rel="icon" href="./assets/icons/logo/joinLogo.svg">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./styles/colors.css">
-    <link rel="stylesheet" href="./styles/index.css" />
-    <link rel="stylesheet" href="./styles/index-mobile.css">
-    <script src="./js/data/database-traffic.js"></script>
-    <script src="./js/pages/index.js"></script>
-    <script src="./js/pages/commons-index-signup.js"></script>
-    <script src="./js/events/login-signup-demo.js"></script>
-    <script src="./js/events/landscape-blocker.js" defer></script>
-  </head>
-  <body onload="removeOverlay()">
-    <div class="frame-max-width scrollable">
-    <div id="index-overlay" class="idx-overlay"></div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Coordinate your team's work with our Kanban app “join-474” and keep track of your project at all times." />
+  <title>Login</title>
+
+  <link id="favicon" rel="icon" href="./assets/icons/logo/joinLogo.svg" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./styles/colors.css" />
+  <link rel="stylesheet" href="./styles/index.css" />
+  <link rel="stylesheet" href="./styles/index-mobile.css" />
+  <link rel="stylesheet" href="./styles/welcome.css" />
+  <link rel="stylesheet" href="./styles/welcome-mobile.css" />
+
+  <script src="./js/data/database-traffic.js"></script>
+  <script src="./js/pages/index.js"></script>
+  <script src="./js/pages/commons-index-signup.js"></script>
+  <script src="./js/events/login-signup-demo.js"></script>
+  <script src="./js/pages/stakeholder-entry.js" defer></script>
+  <script src="./js/events/landscape-blocker.js" defer></script>
+</head>
+
+<body onload="removeOverlay()">
+  <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+
+  <div class="frame-max-width scrollable">
+    <div id="index-overlay" class="idx-overlay" aria-hidden="true"></div>
+
     <div class="content-wrapper-idx">
-      <svg class="floating-logo" viewBox="0 0 101 122" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path class="dark-fill" d="M71.6721 0H49.5143V25.4923H71.6721V0Z"/>
-        <path class="dark-fill" d="M49.5142 46.2251H71.6721V82.1779C71.7733 90.8292 69.3112 99.3153 64.5986 106.557C59.9455 113.594 50.963 121.966 34.3446 121.966C16.2434 121.966 5.69286 113.406 0 108.715L13.9765 91.4743C19.533 96.0112 24.885 99.7435 34.4299 99.7435C41.6567 99.7435 44.5372 96.7988 46.2247 94.2307C48.5186 90.6637 49.7052 86.4923 49.6335 82.2464L49.5142 46.2251Z"/>
-        <path d="M38.2137 30.1318H16.0559V52.3884H38.2137V30.1318Z" fill="#29ABE2"/>
-        <path class="dark-fill" d="M83.2793 111.522C83.2793 116.265 80.8761 118.815 77.5183 118.815C74.1605 118.815 71.9618 115.785 71.9618 111.762C71.9618 107.739 74.2287 104.554 77.7058 104.554C81.1829 104.554 83.2793 107.687 83.2793 111.522ZM74.5355 111.711C74.5355 114.57 75.6775 116.675 77.6376 116.675C79.5977 116.675 80.7056 114.45 80.7056 111.539C80.7056 108.988 79.6829 106.592 77.6376 106.592C75.5923 106.592 74.5355 108.903 74.5355 111.711Z"/>
-        <path class="dark-fill" d="M87.6768 104.76V118.593H85.2224V104.76H87.6768Z"/>
-        <path class="dark-fill" d="M90.3358 118.593V104.76H93.0629L95.9946 110.461C96.7493 111.952 97.4207 113.483 98.0058 115.049C97.8524 113.337 97.7843 111.368 97.7843 109.177V104.76H100.034V118.593H97.4945L94.5288 112.772C93.7436 111.243 93.0437 109.671 92.4323 108.064C92.4323 109.776 92.5516 111.711 92.5516 114.09V118.576L90.3358 118.593Z"/>
+      <svg class="floating-logo" viewBox="0 0 101 122" fill="none" xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path class="dark-fill" d="M71.6721 0H49.5143V25.4923H71.6721V0Z" />
+        <path class="dark-fill"
+          d="M49.5142 46.2251H71.6721V82.1779C71.7733 90.8292 69.3112 99.3153 64.5986 106.557C59.9455 113.594 50.963 121.966 34.3446 121.966C16.2434 121.966 5.69286 113.406 0 108.715L13.9765 91.4743C19.533 96.0112 24.885 99.7435 34.4299 99.7435C41.6567 99.7435 44.5372 96.7988 46.2247 94.2307C48.5186 90.6637 49.7052 86.4923 49.6335 82.2464L49.5142 46.2251Z" />
+        <path d="M38.2137 30.1318H16.0559V52.3884H38.2137V30.1318Z" fill="#29ABE2" />
+        <path class="dark-fill"
+          d="M83.2793 111.522C83.2793 116.265 80.8761 118.815 77.5183 118.815C74.1605 118.815 71.9618 115.785 71.9618 111.762C71.9618 107.739 74.2287 104.554 77.7058 104.554C81.1829 104.554 83.2793 107.687 83.2793 111.522ZM74.5355 111.711C74.5355 114.57 75.6775 116.675 77.6376 116.675C79.5977 116.675 80.7056 114.45 80.7056 111.539C80.7056 108.988 79.6829 106.592 77.6376 106.592C75.5923 106.592 74.5355 108.903 74.5355 111.711Z" />
+        <path class="dark-fill" d="M87.6768 104.76V118.593H85.2224V104.76H87.6768Z" />
+        <path class="dark-fill"
+          d="M90.3358 118.593V104.76H93.0629L95.9946 110.461C96.7493 111.952 97.4207 113.483 98.0058 115.049C97.8524 113.337 97.7843 111.368 97.7843 109.177V104.76H100.034V118.593H97.4945L94.5288 112.772C93.7436 111.243 93.0437 109.671 92.4323 108.064C92.4323 109.776 92.5516 111.711 92.5516 114.09V118.576L90.3358 118.593Z" />
       </svg>
 
-      <section class="index-title">
-        <div id="login-desktop" class="sign-up">
-          <p>Not a Join user?</p>
-          <button class="sign-up" onclick="location.href='./html/sign-up.html'">Sign up</button>
-        </div>
-      </section>
-
-      <section class="dialogue-frame">
-        <div class="title">
-          <h1>Log in</h1>
-          <svg height="3" viewBox="0 0 154 3" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M152 1.5L2 1.5" stroke="var(--lightBlue)" stroke-width="3" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="login-inputs">
-          <div class="input-frame overlay-anchor required">
-            <input id="login-email" type="email" placeholder="Email" onclick="clearRedAlerts()" autocomplete="off">
-            <span class="icon-container eye">
-              <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 16.5C1.45 16.5 0.979167 16.3042 0.5875 15.9125C0.195833 15.5208 0 15.05 0 14.5V2.5C0 1.95 0.195833 1.47917 0.5875 1.0875C0.979167 0.695833 1.45 0.5 2 0.5H18C18.55 0.5 19.0208 0.695833 19.4125 1.0875C19.8042 1.47917 20 1.95 20 2.5V14.5C20 15.05 19.8042 15.5208 19.4125 15.9125C19.0208 16.3042 18.55 16.5 18 16.5H2ZM18 4.5L10.525 9.175C10.4417 9.225 10.3542 9.2625 10.2625 9.2875C10.1708 9.3125 10.0833 9.325 10 9.325C9.91667 9.325 9.82917 9.3125 9.7375 9.2875C9.64583 9.2625 9.55833 9.225 9.475 9.175L2 4.5V14.5H18V4.5ZM10 7.5L18 2.5H2L10 7.5ZM2 4.75V3.275V3.3V3.2875V4.75Z" 
-                fill="var(--sidebarNoticeGrey)"/>
-              </svg>
-            </span>
-            <div id="alert-login" class="red-alert d-none">
-            Please enter your email
-            </div>
+      <main id="main-content">
+        <section id="stakeholder-entry-view" class="welcome-dialogue-frame welcome-card" aria-labelledby="welcome-title"
+          aria-describedby="welcome-description">
+          <div class="welcome-title-wrap">
+            <h1 id="welcome-title" class="welcome-title">Welcome</h1>
+            <svg class="welcome-title-line" height="3" viewBox="0 0 154 3" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M152 1.5L2 1.5" stroke="var(--lightBlue)" stroke-width="3" stroke-linecap="round" />
+            </svg>
           </div>
 
-          <div class="input-frame overlay-anchor password-frame">
-            <input id="login-password" class="password-input" oninput="checkInput(this)" onclick="clearRedAlerts()" type="password" placeholder="Password">
-            <span class="icon-container eye">
-              <svg class="locker-icon" width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 21.5C1.45 21.5 0.979167 21.3042 0.5875 20.9125C0.195833 20.5208 0 20.05 0 19.5V9.5C0 8.95 0.195833 8.47917 0.5875 8.0875C0.979167 7.69583 1.45 7.5 2 7.5H3V5.5C3 4.11667 3.4875 2.9375 4.4625 1.9625C5.4375 0.9875 6.61667 0.5 8 0.5C9.38333 0.5 10.5625 0.9875 11.5375 1.9625C12.5125 2.9375 13 4.11667 13 5.5V7.5H14C14.55 7.5 15.0208 7.69583 15.4125 8.0875C15.8042 8.47917 16 8.95 16 9.5V19.5C16 20.05 15.8042 20.5208 15.4125 20.9125C15.0208 21.3042 14.55 21.5 14 21.5H2ZM2 19.5H14V9.5H2V19.5ZM8 16.5C8.55 16.5 9.02083 16.3042 9.4125 15.9125C9.80417 15.5208 10 15.05 10 14.5C10 13.95 9.80417 13.4792 9.4125 13.0875C9.02083 12.6958 8.55 12.5 8 12.5C7.45 12.5 6.97917 12.6958 6.5875 13.0875C6.19583 13.4792 6 13.95 6 14.5C6 15.05 6.19583 15.5208 6.5875 15.9125C6.97917 16.3042 7.45 16.5 8 16.5ZM5 7.5H11V5.5C11 4.66667 10.7083 3.95833 10.125 3.375C9.54167 2.79167 8.83333 2.5 8 2.5C7.16667 2.5 6.45833 2.79167 5.875 3.375C5.29167 3.95833 5 4.66667 5 5.5V7.5Z" 
-                fill="var(--sidebarNoticeGrey)"/>
-              </svg>
-            </span>
-            <div id="alert" class="red-alert d-none">
-            Check your email and password. Please try again.
+          <div class="welcome-content">
+            <p id="welcome-description" class="welcome-text">
+              Pick the option that suits your role: create a request as a stakeholder or log in if you’re part of the
+              team.
+            </p>
+
+            <div class="welcome-actions">
+              <div class="welcome-btn-section">
+                <span class="welcome-question-stakeholder">
+                  <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                      d="M2.1 20C1.5225 20 1.02813 19.7939 0.616875 19.3816C0.205625 18.9693 0 18.4737 0 17.8947V6.31579C0 5.73684 0.205625 5.24123 0.616875 4.82895C1.02813 4.41667 1.5225 4.21053 2.1 4.21053H6.3V2.10526C6.3 1.52632 6.50562 1.0307 6.91687 0.618421C7.32812 0.20614 7.8225 0 8.4 0H12.6C13.1775 0 13.6719 0.20614 14.0831 0.618421C14.4944 1.0307 14.7 1.52632 14.7 2.10526V4.21053H18.9C19.4775 4.21053 19.9719 4.41667 20.3831 4.82895C20.7944 5.24123 21 5.73684 21 6.31579V17.8947C21 18.4737 20.7944 18.9693 20.3831 19.3816C19.9719 19.7939 19.4775 20 18.9 20H2.1ZM2.1 17.8947H18.9V6.31579H2.1V17.8947ZM8.4 4.21053H12.6V2.10526H8.4V4.21053Z"
+                      fill="#29ABE2" />
+                  </svg>
+                  <p>Are you a stakeholder?</p>
+                </span>
+
+                <button type="button" class="btn welcome-button-secondary" data-action="create-request"
+                  aria-describedby="create-request-hint">
+                  Create request
+                </button>
+              </div>
+
+              <div class="welcome-btn-section">
+                <span class="welcome-question-member">
+                  <svg width="25" height="19" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                      d="M0 15C0 14.3561 0.16572 13.7642 0.497159 13.2244C0.828598 12.6847 1.26894 12.2727 1.81818 11.9886C2.99242 11.4015 4.18561 10.9612 5.39773 10.6676C6.60985 10.3741 7.84091 10.2273 9.09091 10.2273C10.3409 10.2273 11.572 10.3741 12.7841 10.6676C13.9962 10.9612 15.1894 11.4015 16.3636 11.9886C16.9129 12.2727 17.3532 12.6847 17.6847 13.2244C18.0161 13.7642 18.1818 14.3561 18.1818 15V15.9091C18.1818 16.5341 17.9593 17.0691 17.5142 17.5142C17.0691 17.9593 16.5341 18.1818 15.9091 18.1818H2.27273C1.64773 18.1818 1.11269 17.9593 0.667614 17.5142C0.222538 17.0691 0 16.5341 0 15.9091V15ZM22.7273 18.1818H19.8295C20.0379 17.8409 20.1941 17.4763 20.2983 17.0881C20.4025 16.6998 20.4545 16.3068 20.4545 15.9091V14.7727C20.4545 13.9394 20.2225 13.1392 19.7585 12.3722C19.2945 11.6051 18.6364 10.947 17.7841 10.3977C18.75 10.5114 19.6591 10.7055 20.5114 10.9801C21.3636 11.2547 22.1591 11.5909 22.8977 11.9886C23.5795 12.3674 24.1004 12.7888 24.4602 13.2528C24.8201 13.7169 25 14.2235 25 14.7727V15.9091C25 16.5341 24.7775 17.0691 24.3324 17.5142C23.8873 17.9593 23.3523 18.1818 22.7273 18.1818ZM9.09091 9.09091C7.84091 9.09091 6.77083 8.64583 5.88068 7.75568C4.99053 6.86553 4.54545 5.79545 4.54545 4.54545C4.54545 3.29545 4.99053 2.22538 5.88068 1.33523C6.77083 0.445076 7.84091 0 9.09091 0C10.3409 0 11.411 0.445076 12.3011 1.33523C13.1913 2.22538 13.6364 3.29545 13.6364 4.54545C13.6364 5.79545 13.1913 6.86553 12.3011 7.75568C11.411 8.64583 10.3409 9.09091 9.09091 9.09091ZM20.4545 4.54545C20.4545 5.79545 20.0095 6.86553 19.1193 7.75568C18.2292 8.64583 17.1591 9.09091 15.9091 9.09091C15.7008 9.09091 15.4356 9.06723 15.1136 9.01989C14.7917 8.97254 14.5265 8.92045 14.3182 8.86364C14.8295 8.25758 15.2225 7.58523 15.4972 6.84659C15.7718 6.10795 15.9091 5.34091 15.9091 4.54545C15.9091 3.75 15.7718 2.98295 15.4972 2.24432C15.2225 1.50568 14.8295 0.833333 14.3182 0.227273C14.5833 0.132576 14.8485 0.0710227 15.1136 0.0426136C15.3788 0.0142045 15.6439 0 15.9091 0C17.1591 0 18.2292 0.445076 19.1193 1.33523C20.0095 2.22538 20.4545 3.29545 20.4545 4.54545ZM2.27273 15.9091H15.9091V15C15.9091 14.7917 15.857 14.6023 15.7528 14.4318C15.6487 14.2614 15.5114 14.1288 15.3409 14.0341C14.3182 13.5227 13.286 13.1392 12.2443 12.8835C11.2027 12.6278 10.1515 12.5 9.09091 12.5C8.0303 12.5 6.97917 12.6278 5.9375 12.8835C4.89583 13.1392 3.86364 13.5227 2.84091 14.0341C2.67045 14.1288 2.53314 14.2614 2.42898 14.4318C2.32481 14.6023 2.27273 14.7917 2.27273 15V15.9091ZM9.09091 6.81818C9.71591 6.81818 10.2509 6.59564 10.696 6.15057C11.1411 5.70549 11.3636 5.17045 11.3636 4.54545C11.3636 3.92045 11.1411 3.38542 10.696 2.94034C10.2509 2.49527 9.71591 2.27273 9.09091 2.27273C8.46591 2.27273 7.93087 2.49527 7.4858 2.94034C7.04072 3.38542 6.81818 3.92045 6.81818 4.54545C6.81818 5.17045 7.04072 5.70549 7.4858 6.15057C7.93087 6.59564 8.46591 6.81818 9.09091 6.81818Z"
+                      fill="#29ABE2" />
+                  </svg>
+                  <p>Are you a team member?</p>
+                </span>
+
+                <button type="button" class="btn welcome-button-primary" data-action="member-login"
+                  aria-describedby="member-login-hint">
+                  Member log in
+                </button>
+              </div>
             </div>
+
+            <p id="member-login-hint" class="visually-hidden">
+              Opens the regular login form for Join members.
+            </p>
+
+            <p id="create-request-hint" class="visually-hidden">
+              Opens the external request page for stakeholders.
+            </p>
           </div>
-        </div>
+        </section>
 
-        <div class="login-btns">
-          <button class="btn" onclick="handleLogin()">Log in</button>
-          <button class="btn" onclick="directLogin()">Guest Log in</button>
-        </div>
-      </section>
+        <section id="login-view" class="login-view d-none" aria-labelledby="login-title">
+          <section class="index-title" aria-label="Sign up information">
+            <div id="login-desktop" class="sign-up">
+              <p>Not a Join user?</p>
+              <button class="sign-up" type="button" onclick="location.href='./html/sign-up.html'">
+                Sign up
+              </button>
+            </div>
+          </section>
 
-      <div id="login-mobile" class="sign-up">
-        <p>Not a Join user?</p>
-        <button class="sign-up" onclick="location.href='./html/sign-up.html'">Sign up</button>
-      </div>
+          <section class="dialogue-frame">
+            <div class="title">
+              <h1 id="login-title">Log in</h1>
+              <svg height="3" viewBox="0 0 154 3" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M152 1.5L2 1.5" stroke="var(--lightBlue)" stroke-width="3" stroke-linecap="round" />
+              </svg>
+            </div>
 
-      <div class="legal-part">
+            <div class="login-inputs">
+              <div class="input-frame overlay-anchor required">
+                <label for="login-email" class="visually-hidden">Email</label>
+                <input id="login-email" type="email" placeholder="Email" onclick="clearRedAlerts()"
+                  autocomplete="off" />
+
+                <span class="icon-container eye" aria-hidden="true">
+                  <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M2 16.5C1.45 16.5 0.979167 16.3042 0.5875 15.9125C0.195833 15.5208 0 15.05 0 14.5V2.5C0 1.95 0.195833 1.47917 0.5875 1.0875C0.979167 0.695833 1.45 0.5 2 0.5H18C18.55 0.5 19.0208 0.695833 19.4125 1.0875C19.8042 1.47917 20 1.95 20 2.5V14.5C20 15.05 19.8042 15.5208 19.4125 15.9125C19.0208 16.3042 18.55 16.5 18 16.5H2ZM18 4.5L10.525 9.175C10.4417 9.225 10.3542 9.2625 10.2625 9.2875C10.1708 9.3125 10.0833 9.325 10 9.325C9.91667 9.325 9.82917 9.3125 9.7375 9.2875C9.64583 9.2625 9.55833 9.225 9.475 9.175L2 4.5V14.5H18V4.5ZM10 7.5L18 2.5H2L10 7.5ZM2 4.75V3.275V3.3V3.2875V4.75Z"
+                      fill="var(--sidebarNoticeGrey)" />
+                  </svg>
+                </span>
+
+                <div id="alert-login" class="red-alert d-none" role="alert" aria-live="polite">
+                  Please enter your email
+                </div>
+              </div>
+
+              <div class="input-frame overlay-anchor password-frame">
+                <label for="login-password" class="visually-hidden">Password</label>
+                <input id="login-password" class="password-input" oninput="checkInput(this)" onclick="clearRedAlerts()"
+                  type="password" placeholder="Password" />
+
+                <span class="icon-container eye" aria-hidden="true">
+                  <svg class="locker-icon" width="16" height="22" viewBox="0 0 16 22" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M2 21.5C1.45 21.5 0.979167 21.3042 0.5875 20.9125C0.195833 20.5208 0 20.05 0 19.5V9.5C0 8.95 0.195833 8.47917 0.5875 8.0875C0.979167 7.69583 1.45 7.5 2 7.5H3V5.5C3 4.11667 3.4875 2.9375 4.4625 1.9625C5.4375 0.9875 6.61667 0.5 8 0.5C9.38333 0.5 10.5625 0.9875 11.5375 1.9625C12.5125 2.9375 13 4.11667 13 5.5V7.5H14C14.55 7.5 15.0208 7.69583 15.4125 8.0875C15.8042 8.47917 16 8.95 16 9.5V19.5C16 20.05 15.8042 20.5208 15.4125 20.9125C15.0208 21.3042 14.55 21.5 14 21.5H2ZM2 19.5H14V9.5H2V19.5ZM8 16.5C8.55 16.5 9.02083 16.3042 9.4125 15.9125C9.80417 15.5208 10 15.05 10 14.5C10 13.95 9.80417 13.4792 9.4125 13.0875C9.02083 12.6958 8.55 12.5 8 12.5C7.45 12.5 6.97917 12.6958 6.5875 13.0875C6.19583 13.4792 6 13.95 6 14.5C6 15.05 6.19583 15.5208 6.5875 15.9125C6.97917 16.3042 7.45 16.5 8 16.5ZM5 7.5H11V5.5C11 4.66667 10.7083 3.95833 10.125 3.375C9.54167 2.79167 8.83333 2.5 8 2.5C7.16667 2.5 6.45833 2.79167 5.875 3.375C5.29167 3.95833 5 4.66667 5 5.5V7.5Z"
+                      fill="var(--sidebarNoticeGrey)" />
+                  </svg>
+                </span>
+
+                <div id="alert" class="red-alert d-none" role="alert" aria-live="polite">
+                  Check your email and password. Please try again.
+                </div>
+              </div>
+            </div>
+
+            <div class="login-btns">
+              <button class="btn" type="button" onclick="handleLogin()">Log in</button>
+              <button class="btn" type="button" onclick="directLogin()">
+                Guest Log in
+              </button>
+            </div>
+          </section>
+
+          <div id="login-mobile" class="sign-up">
+            <p>Not a Join user?</p>
+            <button class="sign-up" type="button" onclick="location.href='./html/sign-up.html'">
+              Sign up
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="legal-part welcome-legal-part">
         <a href="./html/privacy-policy.html">Privacy Policy</a>
         <a href="./html/legal-notice.html">Legal notice</a>
-      </div>
+      </footer>
     </div>
 
     <div id="landscape-overlay">
       <div class="landscape-overlay-logo"></div>
       <div class="landscape-overlay-message">
-        <h2>
-          Please rotate your device to portrait mode to use this application.
-        </h2>
+        <h2>Please rotate your device to portrait mode to use this application.</h2>
       </div>
     </div>
+  </div>
+</body>
 
-    </div>
-  </body>
 </html>

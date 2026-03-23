@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join | Create Request</title>
+    <link id="favicon" rel="icon" href="../assets/icons/logo/joinLogo.svg" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../styles/colors.css" />
+    <link rel="stylesheet" href="../styles/stakeholder.css" />
+    <link rel="stylesheet" href="../styles/stakeholder-mobile.css" />
+    <link rel="stylesheet" href="../styles/index.css" />
+    <link rel="stylesheet" href="../styles/index-mobile.css" />
+    <link rel="stylesheet" href="../styles/welcome-mobile.css" />
+
+    <script src="../js/pages/stakeholder-request.js" defer></script>
+    <script src="../js/events/landscape-blocker.js" defer></script>
+</head>
+
+<body>
+
+    <main class="request-page" id="main-content">
+
+        <header class="request-header">
+            <img src="../assets/icons/logo/whiteJoinLogo.svg" alt="Join logo" class="request-logo">
+        </header>
+
+        <div class="request-shell">
+            <section class="request-status-bar" aria-label="Request status and navigation">
+                <section class="request-title-area stakeholder-d-show-mobile stakeholder-d-none-desktop"
+                    aria-labelledby="stakeholder-heading ">
+                    <h1 id="stakeholder-heading" class="request-title">Welcome</h1>
+                </section>
+                <button type="button" class="request-back-button" aria-label="Back to welcome page"
+                    onclick="goBackToIndex()">
+                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M4.27563 8.48558H19.1716C19.908 8.48558 20.505 9.08253 20.505 9.81891C20.505 10.5553 19.908 11.1522 19.1716 11.1522H4.27563L10.485 17.3616C11.0056 17.8822 11.0056 18.7263 10.485 19.2469C9.96434 19.7675 9.12025 19.7675 8.59963 19.2469L0.585843 11.2331C-0.195206 10.4521 -0.195204 9.18574 0.585844 8.4047L8.59963 0.390908C9.12025 -0.129713 9.96434 -0.129712 10.485 0.390909C11.0056 0.911529 11.0056 1.75562 10.485 2.27624L4.27563 8.48558Z"
+                            fill="#2A3647" />
+                    </svg>
+                </button>
+
+                <div class="request-counter" role="status" aria-live="polite" aria-atomic="true">
+                    <p id="stakeholder-limit-text" class="request-counter-text">
+                        <span id="requests-left" class="request-counter-value">0</span>
+                        <span class="request-counter-suffix"> of 10 requests used today</span>
+                    </p>
+                </div>
+            </section>
+
+            <section class="request-title-area stakeholder-d-none-mobile stakeholder-d-show-desktop"
+                aria-labelledby="stakeholder-heading ">
+                <h1 id="stakeholder-heading" class="request-title">Welcome</h1>
+            </section>
+
+            <section class="request-content-area">
+                <div id="request-open-view" class="request-state">
+                    <div class="request-layout">
+                        <div class="request-copy">
+                            <p id="stakeholder-description" class="request-lead">
+                                Easily create a ticket by sending an email — no extra steps needed.
+                            </p>
+
+                            <div class="request-visual stakeholder-d-show-mobile stakeholder-d-none-desktop"
+                                aria-hidden="true">
+                                <img src="../assets/img/welcome-ki.png" alt="" class="request-image" />
+                            </div>
+
+                            <div class="request-text-group">
+                                <p class="request-text">
+                                    On this platform, you can submit your feature requests via email.
+                                    Our AI system will automatically generate a ticket with a deadline
+                                    and priority level.
+                                </p>
+
+                                <p class="request-text">
+                                    A total of 10 requests can be created per day. After this limit,
+                                    emails can still be sent, but they will be manually reviewed by our
+                                    team instead of generating AI tickets.
+                                </p>
+                            </div>
+
+                            <div class="request-actions">
+                                <a id="create-request-link" class="request-button"
+                                    href="mailto:requests@example.com?subject=New%20Request"
+                                    aria-describedby="mail-hint">
+                                    <span class="request-btn-check-gap">
+                                        <p>Create Email Request</p>
+                                        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M5.288 8.775L13.763 0.3C13.963 0.1 14.2005 0 14.4755 0C14.7505 0 14.988 0.1 15.188 0.3C15.388 0.5 15.488 0.7375 15.488 1.0125C15.488 1.2875 15.388 1.525 15.188 1.725L5.988 10.925C5.788 11.125 5.55467 11.225 5.288 11.225C5.02133 11.225 4.788 11.125 4.588 10.925L0.288 6.625C0.088 6.425 -0.00783333 6.1875 0.0005 5.9125C0.00883333 5.6375 0.113 5.4 0.313 5.2C0.513 5 0.7505 4.9 1.0255 4.9C1.3005 4.9 1.538 5 1.738 5.2L5.288 8.775Z"
+                                                fill="white" />
+                                        </svg>
+                                    </span>
+                                </a>
+
+                                <p id="mail-hint" class="visually-hidden">
+                                    Opens your default email program with a prepared recipient and subject.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="request-visual stakeholder-d-none-mobile stakeholder-d-show-desktop"
+                            aria-hidden="true">
+                            <img src="../assets/img/welcome-ki.png" alt="" class="request-image" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-closed-view" class="request-state d-none">
+                    <div class="request-layout">
+                        <div class="request-copy">
+                            <div class="request-alert-box">
+                                <p class="request-alert-text">
+                                    The daily 10-request limit has been reached!
+                                </p>
+                            </div>
+
+                            <div class="request-visual stakeholder-d-show-mobile stakeholder-d-none-desktop"
+                                aria-hidden="true">
+                                <img src="../assets/img/welcome-mail.png" alt="" class="request-image" />
+                            </div>
+
+                            <div class="request-text-group">
+                                <p class="request-text">
+                                    Need more? No worries — you can still send emails, but our team will
+                                    review them manually instead of using AI to create tickets.
+                                </p>
+                            </div>
+
+                            <div class="request-actions">
+                                <a id="create-request-link-closed" class="request-button"
+                                    href="mailto:requests@example.com?subject=New%20Request">
+                                    <span class="request-btn-check-gap">
+                                        <p>Send an email</p>
+                                        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M5.288 8.775L13.763 0.3C13.963 0.1 14.2005 0 14.4755 0C14.7505 0 14.988 0.1 15.188 0.3C15.388 0.5 15.488 0.7375 15.488 1.0125C15.488 1.2875 15.388 1.525 15.188 1.725L5.988 10.925C5.788 11.125 5.55467 11.225 5.288 11.225C5.02133 11.225 4.788 11.125 4.588 10.925L0.288 6.625C0.088 6.425 -0.00783333 6.1875 0.0005 5.9125C0.00883333 5.6375 0.113 5.4 0.313 5.2C0.513 5 0.7505 4.9 1.0255 4.9C1.3005 4.9 1.538 5 1.738 5.2L5.288 8.775Z"
+                                                fill="white" />
+                                        </svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="request-visual stakeholder-d-none-mobile stakeholder-d-show-desktop"
+                            aria-hidden="true">
+                            <img src="../assets/img/welcome-mail.png" alt="" class="request-image" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="legal-part welcome-legal-part stakeholder-legal-part">
+                <a href="./html/privacy-policy.html">Privacy Policy</a>
+                <a href="./html/legal-notice.html">Legal notice</a>
+            </footer>
+        </div>
+    </main>
+
+    <div id="landscape-overlay">
+        <div class="landscape-overlay-logo"></div>
+        <div class="landscape-overlay-message">
+            <h2>Please rotate your device to portrait mode to use this application.</h2>
+        </div>
+    </div>
+</body>
+
+</html>
