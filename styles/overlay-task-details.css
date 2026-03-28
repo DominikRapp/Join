@@ -6,23 +6,24 @@
   margin: 0;
   pointer-events: none;
 }
+
 .content-task {
-  max-width: 400px;
-  padding: 15px;
+  max-width: 450px;
 }
+
 .taskCardField.priority-section,
 .taskCardField.taskCardField.date {
   display: flex;
-  gap: 15px;
+  gap: 8px;
   justify-content: flex-start;
   align-items: center;
 }
-#overlay-task-detail .modal-content-task{
+
+#overlay-task-detail .modal-content-task {
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  padding: 32px 32px 24px 32px;
-  max-width: 450px;
+  max-width: 500px;
   width: 100%;
   min-width: 0;
   margin: 0 auto;
@@ -30,6 +31,7 @@
   font-family: "Inter", Arial, sans-serif;
   max-height: 90vh;
 }
+
 .task-category,
 .category-user-story,
 .category-technical-task,
@@ -40,13 +42,30 @@
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 18px;
+  margin-bottom: 0px;
+}
+
+.task-ai-generated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  background: linear-gradient(to right, var(--fadepurple), var(--lightBlue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.task-ai-generated-badge svg {
+  flex-shrink: 0;
 }
 
 .close-modal-btn {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 30px;
+  right: 8px;
   background: transparent;
   border: none;
   font-size: 1.5rem;
@@ -54,17 +73,20 @@
   cursor: pointer;
   z-index: 2;
 }
+
 .titleText {
   font-size: 61px;
   font-weight: 700;
   margin-bottom: 8px;
   line-height: 1.1;
 }
+
 .description {
   color: #444;
   font-size: 1.1rem;
   margin-bottom: 18px;
 }
+
 .taskCardField.date p:first-child,
 .taskCardField.priority-section p:first-child,
 .taskCardField.assigned-section .assigned-title,
@@ -74,11 +96,72 @@
   margin-bottom: 10px;
   font-weight: 500;
 }
+
+.taskCardField.creator-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.taskCardField.creator-section>p {
+  color: #6c757d;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.task-detail-creator-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-detail-creator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.creator-badge-member {
+  background-color: var(--memberBg);
+  color: var(--membername);
+}
+
+.creator-badge-extern {
+  background-color: var(--externYellow);
+  color: var(--membername);
+}
+
+.task-detail-creator-name {
+  font-size: 20px;
+  color: var(--darkBlue);
+}
+
+.task-detail-creator-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  color: var(--darkBlue);
+}
+
 .taskCardField.date p:last-child {
   color: #222;
   font-size: 1rem;
   margin-bottom: 10px;
 }
+
+.taskCardField.creator-section svg,
+.task-detail-creator-source svg {
+  flex-shrink: 0;
+}
+
 .priority-display {
   display: flex;
   align-items: baseline;
@@ -91,6 +174,7 @@
   gap: 8px;
   margin-bottom: 10px;
 }
+
 .assigned-initials-circle {
   width: 36px;
   height: 36px;
@@ -103,6 +187,7 @@
   color: #fff;
   margin-right: 10px;
 }
+
 .contact-option {
   display: flex;
   align-items: center;
@@ -114,31 +199,37 @@
   box-shadow: none;
   padding: 0;
 }
+
 .subtasks-section {
   margin-top: 18px;
 }
+
 .subtaskList {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .subtask-item {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 1rem;
 }
+
 .subtask-checkbox {
   accent-color: #20c997;
   width: 18px;
   height: 18px;
 }
+
 .cardMenu {
   display: flex;
   align-items: center;
   gap: 18px;
   margin-top: 24px;
 }
+
 .cardMenu button {
   background: none;
   border: none;
@@ -152,19 +243,28 @@
   transition: color 0.2s;
   padding: 5px;
 }
+
 .cardMenu button:hover {
   color: var(--lightBlue);
   padding: 5px;
 }
+
 @media (max-width: 600px) {
+
   #overlay-task-detail .modal-content-task,
   #overlay-task-detail-edit .modal-content-task {
     padding: 16px 4px 12px 4px;
     max-width: 450px;
     border-radius: 12px;
-    margin: 15px;
+    margin: 4px;
   }
+
   .titleText {
     font-size: 1.3rem;
   }
+}
+
+.creator-badge {
+  display: flex;
+  gap: 8px;
 }

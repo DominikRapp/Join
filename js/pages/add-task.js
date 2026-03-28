@@ -19,9 +19,7 @@ export let fetchData = null;
 export async function initTask() {
   try {
     const data = await getFirebaseData();
-
     initDropdowns(Object.values(data.contacts));
-
     fetchData = data;
   } catch (error) {
     console.error("Fehler beim Laden der Firebase-Daten:", error);
@@ -34,7 +32,6 @@ export async function initTask() {
 export function formatDate(input) {
   let value = input.value.replace(/\D/g, "");
   if (value.length > 8) value = value.slice(0, 8);
-
   let formatted = "";
   if (value.length > 4) {
     formatted =
@@ -70,10 +67,8 @@ export function startResize(e) {
     .querySelector("textarea");
   startY = e.clientY;
   startHeight = currentTextarea.offsetHeight;
-
   document.addEventListener("mousemove", resizeTextarea);
   document.addEventListener("mouseup", stopResize);
-
   e.preventDefault();
 }
 
@@ -108,7 +103,6 @@ export function clearForm() {
   clearSubtasksList();
   clearAssignedTo();
   clearInvalidFields();
-
   renderSubtasks();
 }
 
@@ -116,13 +110,11 @@ export function clearForm() {
  */
 function checkRequiredFields() {
   let isValid = true;
-
   if (!checkTitle()) isValid = false;
   if (!checkDatepicker()) isValid = false;
   if (!checkCategory()) isValid = false;
   if (!checkAssignedTo()) isValid = false;
   if (!checkCategorySpan()) isValid = false;
-
   return isValid;
 }
 
@@ -219,7 +211,6 @@ function hideError(input, error) {
  */
 export function handleInput(inputElement) {
   const titleError = document.getElementById("title-error");
-
   if (inputElement.value.trim()) {
     inputElement.classList.remove("invalid");
     titleError?.classList.remove("d-flex");
@@ -266,7 +257,6 @@ function mapAssignedUsers(selectedContacts, fetchData) {
     console.warn("WARNING: 'fetchData.contacts' fehlt oder ist leer.");
     return [];
   }
-
   return selectedContacts
     .map((contact) => {
       for (const id in fetchData.contacts) {
@@ -277,6 +267,51 @@ function mapAssignedUsers(selectedContacts, fetchData) {
     .filter(Boolean);
 }
 
+/**
+ * Resolves the creator metadata for a manually created task.
+ * It checks the current user from window, localStorage, and sessionStorage.
+ * If no valid user is found, the task is assigned to Guest as an external creator.
+ *
+ * @returns {{ *   creatorName: string, *   creatorEmail: string, *   creatorSource: string, *   creatorType: string, *   isAIGenerated: boolean * }} Normalized creator information for the task.
+ */
+function getManualTaskCreator() {
+  const storedWindowUser = window.currentUser;
+  const storedLocalUser = localStorage.getItem("currentUser");
+  const storedSessionUser = sessionStorage.getItem("currentUser");
+  const resolvedUser = normalizeStoredUser(storedWindowUser) || normalizeStoredUser(storedLocalUser) || normalizeStoredUser(storedSessionUser);
+  if (resolvedUser?.displayName) {
+    return { creatorName: resolvedUser.displayName, creatorEmail: resolvedUser.email || "", creatorSource: "manual", creatorType: "intern", isAIGenerated: false, };
+  }
+  return { creatorName: "Guest", creatorEmail: "", creatorSource: "manual", creatorType: "extern", isAIGenerated: false, };
+}
+
+/**
+ * Normalizes user data from different storage formats into one consistent object.
+ * Supports already parsed objects, JSON strings, and plain name strings.
+ *
+ * @param {object|string|null|undefined} userData - Raw user data from memory or storage.
+ * @returns {{ displayName: string, email: string } | null} Normalized user data or null if invalid.
+ */
+function normalizeStoredUser(userData) {
+  if (!userData) return null;
+  if (typeof userData === "object") {
+    return { displayName: userData.displayName || userData.name || "", email: userData.email || "", };
+  }
+  if (typeof userData === "string") {
+    const trimmedUserData = userData.trim();
+    if (!trimmedUserData) return null;
+    try {
+      const parsedUser = JSON.parse(trimmedUserData);
+      if (parsedUser && typeof parsedUser === "object") {
+        return { displayName: parsedUser.displayName || parsedUser.name || "", email: parsedUser.email || "", };
+      }
+    } catch {
+      return { displayName: trimmedUserData, email: "", };
+    }
+  }
+  return null;
+}
+
 /** * Creates a task object from the form inputs.
  * @returns {Object} - The created task object.
  */
@@ -285,34 +320,17 @@ function createTaskObject() {
   const description = getInputValue("task-description");
   const dueDate = getInputValue("datepicker");
   const formattedDate = getFormattedDate();
-
   const { total, checked, completed } = extractSubtasks(addedSubtasks);
   const assignedUsers = mapAssignedUsers(selectedContacts, fetchData);
-
-  return {
-    assignedUsers,
-    boardID: "board-1",
-    checkedSubtasks: checked,
-    columnID: "inProgress",
-    createdAt: formattedDate,
-    deadline: dueDate,
-    description,
-    priority: currentPriority,
-    subtasksCompleted: completed,
-    title,
-    totalSubtasks: total,
-    type: selectedCategory,
-    updatedAt: formattedDate,
-  };
+  const creatorData = getManualTaskCreator();
+  return { ...creatorData, assignedUsers, boardID: "board-1", checkedSubtasks: checked, columnID: "triage", createdAt: formattedDate, deadline: dueDate, description, priority: currentPriority, subtasksCompleted: completed, title, totalSubtasks: total, type: selectedCategory, updatedAt: formattedDate, };
 }
-
 
 /** * Handles the form submission for creating a new task.
  * @param {Event} event - The form submission event.
  */
 export async function handleCreateTask(event) {
   event.preventDefault();
-
   if (checkRequiredFields()) {
     await processNewTask();
     const overlay = document.getElementById("overlay");
@@ -332,14 +350,11 @@ export async function handleCreateTask(event) {
 async function processNewTask() {
   const submitButton = document.getElementById("submit-button");
   submitButton.disabled = true;
-
   try {
     const newTask = createTaskObject();
     const rawNewObject = createTaskObject();
-
     await CWDATA(rawNewObject, fetchData);
     await showTaskSuccessMsg();
-
     clearForm();
   } finally {
     submitButton.disabled = false;

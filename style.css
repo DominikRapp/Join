@@ -35,7 +35,7 @@
     display: flex;
     flex-direction: column;
     font-family: "Inter", sans-serif;
-    padding-top: 108px;
+    padding-top: 80px;
     padding-left: 96px;
     overflow-y: auto;
     background-color: var(--lightGrey);
@@ -54,7 +54,7 @@
   }
 
   .contacts-main {
-    padding-bottom: 64px; 
+    padding-bottom: 64px;
   }
 
   .sidebar-container {
@@ -151,8 +151,7 @@
 
 /* Firefox */
 @-moz-document url-prefix() {
-  .scrollable
-  {
+  .scrollable {
     scrollbar-color: #29ABE2 #E7E7E7;
     scrollbar-width: auto;
   }
@@ -162,6 +161,7 @@
   .scrollable:not(.contacts-sidebar) {
     scrollbar-width: none;
   }
+
   .scrollable:not(.contacts-sidebar)::-webkit-scrollbar {
     display: none;
   }
@@ -175,4 +175,3 @@
     overflow: auto;
   }
 }
-  

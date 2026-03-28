@@ -25,7 +25,7 @@ body {
   height: min(calc(100vh - 96px), 1700px);
   justify-content: center;
   align-items: center;
-  padding: 108px 96px;
+  padding: 0px 96px;
   overflow-x: hidden;
 }
 
@@ -34,7 +34,7 @@ body {
   height: 700px;
   display: flex;
   flex-direction: column;
-  row-gap: 48px!important;
+  row-gap: 48px !important;
 }
 
 .smry-title {
@@ -42,20 +42,20 @@ body {
   align-items: center;
   column-gap: 30px;
 
-  > p:first-of-type {
+  >p:first-of-type {
     font-weight: 700;
     font-size: 61px;
     color: var(--black);
     letter-spacing: 1.8px;
   }
 
-  > p:last-of-type {
+  >p:last-of-type {
     font-size: 27px;
     color: var(--dark);
     letter-spacing: 1.2px;
   }
 
-  > #horizontal-blue {
+  >#horizontal-blue {
     display: none;
   }
 }
@@ -76,7 +76,7 @@ body {
 
   .btn-row {
     width: 560px;
-    height: 184px; 
+    height: 184px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -99,10 +99,10 @@ body {
   /* transition: all 80ms ease-in-out; */
 
   &.first:first-of-type {
-  transform-origin: left center;
-  
+    transform-origin: left center;
+
     &:hover {
-      transform: scaleX(1.068) scaleY(1.095); 
+      transform: scaleX(1.068) scaleY(1.095);
     }
   }
 
@@ -110,23 +110,23 @@ body {
     transform-origin: right center;
 
     &:hover {
-      transform: scaleX(1.068) scaleY(1.095); 
+      transform: scaleX(1.068) scaleY(1.095);
     }
   }
 
   &.middle {
-  transform-origin: left center;
+    transform-origin: left center;
 
     &:hover {
-      transform: scaleX(1.032) scaleY(1.095); 
+      transform: scaleX(1.032) scaleY(1.095);
     }
   }
 
   &.last:first-of-type {
-  transform-origin: left center;
+    transform-origin: left center;
 
     &:hover {
-      transform: scale(1.095); 
+      transform: scale(1.095);
     }
   }
 
@@ -134,7 +134,7 @@ body {
     transform-origin: center;
 
     &:hover {
-      transform: scale(1.095); 
+      transform: scale(1.095);
     }
   }
 
@@ -142,10 +142,10 @@ body {
     transform-origin: right center;
 
     &:hover {
-      transform: scale(1.095); 
+      transform: scale(1.095);
     }
   }
- 
+
   &:hover {
     background-color: var(--dark);
     color: var(--white);
@@ -187,7 +187,7 @@ body {
 
 /* 2nth and 3th row */
 .middle {
-  width: 560px;
+  width: 360px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -212,7 +212,7 @@ body {
 
 .middle-content-frame {
   justify-content: center;
-  column-gap: 54px;
+  column-gap: 8px;
   height: 96px;
   display: flex;
   align-items: center;
@@ -227,6 +227,7 @@ body {
   column-gap: 15px;
   color: var(--dark);
   text-decoration: none;
+  padding-left: 8px;
 }
 
 .btn-content-last {
@@ -249,7 +250,7 @@ body {
   align-items: center;
 }
 
-.smry-urgent{
+.smry-urgent {
   width: 60px;
   height: 60px;
   border-radius: 50px;
@@ -269,10 +270,25 @@ body {
   color: var(--black);
 }
 
+.email-requests-number {
+  background: linear-gradient(to bottom, var(--lightBlue), var(--fadepurple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.summary-btn.last:hover .email-requests-number {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: var(--white);
+  background-clip: initial;
+  color: var(--white);
+}
+
 .smry-date {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   row-gap: 12px;
 
   .date-text {
@@ -287,14 +303,14 @@ body {
   justify-content: center;
   flex-direction: column;
 
-  > p:first-of-type {
+  >p:first-of-type {
     font-weight: 500;
     font-size: 48px;
     letter-spacing: 1.1px;
     color: var(--dark);
   }
 
-  > p:last-of-type {
+  >p:last-of-type {
     font-weight: 700;
     font-size: 64px;
     letter-spacing: 1.3px;

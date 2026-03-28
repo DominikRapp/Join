@@ -101,12 +101,13 @@ function buildEditTaskObject(formData, taskToEdit) {
   const subtasksCompleted = formData.checkedSubtasks.filter(Boolean).length;
   const updatedAt = getFormattedDate();
   return {
+    ...taskToEdit,
     assignedUsers: Array.isArray(formData.assignedUsers)
       ? formData.assignedUsers
       : [],
-    boardID: "board-1",
+    boardID: taskToEdit.boardID || "board-1",
     checkedSubtasks: formData.checkedSubtasks,
-    columnID: taskToEdit.columnID || "inProgress",
+    columnID: taskToEdit.columnID || "triage",
     createdAt: taskToEdit.createdAt || updatedAt,
     deadline: formData.deadline,
     description: formData.description,

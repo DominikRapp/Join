@@ -82,7 +82,7 @@ export async function handleMoveTask(ev, boardData, direction, CWDATA) {
   const taskId = ev.currentTarget.dataset.taskId;
   const task = boardData.tasks[taskId];
   if (!task) return;
-  const columnOrder = ["toDo", "inProgress", "review", "done"];
+  const columnOrder = ["triage", "toDo", "inProgress", "review", "done"];
   const currentIdx = columnOrder.indexOf(task.columnID);
   let newIdx = direction === "up" ? currentIdx - 1 : currentIdx + 1;
   if (newIdx >= 0 && newIdx < columnOrder.length) {

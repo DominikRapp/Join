@@ -179,6 +179,19 @@
 }
 
 @media (max-width: 768px) {
+    .creator-badge {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .taskCardField.creator-section {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end !important;
+        margin-bottom: 10px;
+        justify-content: flex-start !important;
+    }
+
     .content {
         padding: 0 0 0 0;
     }
@@ -275,9 +288,14 @@
 }
 
 @media (max-width: 650px) {
-
     .priority-btn {
         width: 100px;
+    }
+}
+
+@media (max-width: 600px) {
+    .close-modal-btn {
+        top: 10px !important;
     }
 }
 
@@ -292,5 +310,36 @@
 
     .priority-btn {
         width: 60px;
+    }
+
+    .titleBar {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 22px;
+        margin-bottom: 10px;
+        gap: 14px !important;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .task-detail-creator-name {
+        font-size: 20px;
+        color: var(--darkBlue);
+        width: 100px;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .task-ai-generated-badge {
+        width: 150px !important;
+    }
+}
+
+@media (max-width: 345px) {
+    .close-modal-btn {
+        top: 40px !important;
     }
 }

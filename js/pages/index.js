@@ -175,7 +175,6 @@ function tryAgain() {
 function setSessionStorage() {
   const userDetails = Object.values(fetchedUser)[0];
   const displayName = userDetails.displayName;
-
   sessionStorage.setItem('currentUser', displayName);
   initialsForHeader(displayName);
 }

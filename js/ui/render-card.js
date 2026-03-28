@@ -1,24 +1,10 @@
 import { getTaskOverlay } from "../templates/task-details-template.js";
-import { registerTaskCardDetailOverlay,  detailOverlayElement,  editOverlayElement,
-} from "./render-card-events.js";
-import {
-  setupSubtaskCheckboxListener,
-  handleSubtaskCheckboxChange,
-} from "./subtask-checkbox-handler.js";
-import {
-  setupEditButtonListener,
-  handleEditButtonClick,
-} from "./edit-button-handler.js";
-import {
-  setupDeleteButtonListener,
-  handleDeleteButtonClick,
-} from "./delete-button-handler.js";
+import { registerTaskCardDetailOverlay, detailOverlayElement, editOverlayElement, } from "./render-card-events.js";
+import { setupSubtaskCheckboxListener, handleSubtaskCheckboxChange, } from "./subtask-checkbox-handler.js";
+import { setupEditButtonListener, handleEditButtonClick, } from "./edit-button-handler.js";
+import { setupDeleteButtonListener, handleDeleteButtonClick, } from "./delete-button-handler.js";
 import { setupEditFormModules } from "./edit-form-modules.js";
-import {
-  setupCancelEditBtn,
-  setupTaskEditFormListener,
-  handleTaskEditFormSubmit,
-} from "./edit-form-handler.js";
+import { setupCancelEditBtn, setupTaskEditFormListener, handleTaskEditFormSubmit, } from "./edit-form-handler.js";
 
 /**
  * @param {object} boardData - The complete board data object.
@@ -145,9 +131,8 @@ function generateAssignedAvatarsHtml(assignedUserIDs, contacts) {
   const displayCount = 3;
   let avatarsHtml = getDisplayedAvatars(users, contacts, displayCount);
   if (users.length > displayCount) {
-    avatarsHtml += `<div class="assigned-initials-circle more-users-circle">+${
-      users.length - displayCount
-    }</div>`;
+    avatarsHtml += `<div class="assigned-initials-circle more-users-circle">+${users.length - displayCount
+      }</div>`;
   }
   return avatarsHtml;
 }
@@ -187,14 +172,8 @@ function getPriorityIconAndText(prio) {
   if (prio === "medium")
     return { icon: `../assets/icons/property/medium.svg`, prioText: "Medium" };
   if (prio === "urgent")
-    return {
-      icon: `../assets/icons/property/urgent.svg`,
-      prioText: "Urgent",
-    };
-  return {
-    icon: `../assets/icons/property/default.svg`,
-    prioText: "Unknown",
-  };
+    return { icon: `../assets/icons/property/urgent.svg`, prioText: "Urgent", };
+  return { icon: `../assets/icons/property/default.svg`, prioText: "Unknown", };
 }
 
 /**
@@ -308,12 +287,7 @@ function buildTaskCardHtmlContent(
 function getTaskCardData(boardData, taskID) {
   const task = boardData.tasks[taskID];
   const contacts = boardData.contacts;
-  return {
-    taskDetails: getTaskDetails(task),
-    subtaskProgress: calculateSubtaskProgress(task),
-    avatarsHtml: generateAssignedAvatarsHtml(task.assignedUsers, contacts),
-    priorityInfo: getPriorityIconAndText(task.priority),
-  };
+  return { taskDetails: getTaskDetails(task), subtaskProgress: calculateSubtaskProgress(task), avatarsHtml: generateAssignedAvatarsHtml(task.assignedUsers, contacts), priorityInfo: getPriorityIconAndText(task.priority), };
 }
 
 /**
@@ -326,16 +300,10 @@ export function createSimpleTaskCard(boardData, taskID) {
   if (!validateTaskCardInput(boardData, taskID)) return "";
   const { taskDetails, subtaskProgress, avatarsHtml, priorityInfo } =
     getTaskCardData(boardData, taskID);
-  return buildTaskCardHtmlContent(
-    taskID,
-    taskDetails,
-    subtaskProgress,
-    avatarsHtml,
-    priorityInfo
-  );
+  return buildTaskCardHtmlContent(taskID, taskDetails, subtaskProgress, avatarsHtml, priorityInfo);
 }
 
-const columnOrder = ["toDo", "inProgress", "review", "done"];
+const columnOrder = ["triage", "toDo", "inProgress", "review", "done"];
 /**
  * Handles click events for moving tasks up or down in columns.
  * @param {MouseEvent} e - The click event.

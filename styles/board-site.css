@@ -28,7 +28,7 @@ body {
 }
 
 .board-wrapper.frame-191 {
-  padding-top: 6.5rem;
+  padding-top: 2.5rem;
   background-color: transparent;
   box-sizing: border-box;
   display: flex;
@@ -248,16 +248,13 @@ body {
   flex-wrap: nowrap;
   flex-grow: 1;
   align-items: flex-start;
-  max-width: 1440px;
 }
-
-
 
 .column-wrapper {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: min(18vw, 320px);
+  width: min(16vw, 220px);
   min-width: 180px;
 }
 

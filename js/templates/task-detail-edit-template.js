@@ -200,11 +200,6 @@ function setupEditFormSubmitPrevention(container) {
  * @param {string} taskId - The ID of the task to be edited.
  * @returns {Promise<void>} Resolves when the task is saved.
  */
-/**
- * Saves the changes of a task and passes them to the database.
- * @param {string} taskId - The ID of the task to be edited.
- * @returns {Promise<void>} Resolves when the task is saved.
- */
 export async function saveEditedTask(taskId) {
   const form = getEditForm();
   if (!form) return;
@@ -233,6 +228,7 @@ function getEditForm() {
  * @returns {object} The edited task object.
  */
 function buildEditTaskObject(form, taskId) {
+  const existingTask = window.firebaseData?.tasks?.[taskId] || {};
   const title = form.querySelector("[name='title']")?.value || "";
   const description = form.querySelector("[name='description']")?.value || "";
   const deadline = form.querySelector("[name='deadline']")?.value || "";
@@ -242,21 +238,7 @@ function buildEditTaskObject(form, taskId) {
   const subtasksCompleted = checkedSubtasks.filter(Boolean).length;
   const assignedUsers = getAssignedUsersFromForm(form);
   const formattedDate = getFormattedDate();
-  return {
-    assignedUsers,
-    boardID: "board-1",
-    checkedSubtasks,
-    columnID: "inProgress",
-    createdAt: formattedDate,
-    deadline,
-    description,
-    priority,
-    subtasksCompleted,
-    title,
-    totalSubtasks,
-    type,
-    updatedAt: formattedDate,
-  };
+  return { ...existingTask, assignedUsers, boardID: existingTask.boardID || "board-1", checkedSubtasks, columnID: existingTask.columnID || "triage", createdAt: existingTask.createdAt || formattedDate, deadline, description, priority, subtasksCompleted, title, totalSubtasks, type, updatedAt: formattedDate, };
 }
 
 /**

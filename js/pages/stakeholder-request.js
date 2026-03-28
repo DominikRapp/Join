@@ -1,18 +1,40 @@
-const dailyRequestLimit = 10;
-const storageKey = 'joinStakeholderRequests';
+const FIREBASE_BASE_URL = 'https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app';
+const REQUEST_LIMIT_PATH = 'emailRequestLimit';
+const ISSUE_COLLECTOR_PATH = 'issueCollector';
 
 document.addEventListener('DOMContentLoaded', initStakeholderRequestPage);
 
 /**
  * onload-function: initialize stakeholder request page and show current request state.
+ * @returns {Promise<void>}
  */
-function initStakeholderRequestPage() {
+async function initStakeholderRequestPage() {
     const elements = getStakeholderElements();
     if (!areRequiredElementsAvailable(elements)) return;
-    const requestData = getStoredRequestData();
-    const usedRequests = getUsedRequests(requestData.count);
-    const remainingRequests = getRemainingRequests(usedRequests);
-    renderRequestPageState(elements, usedRequests, remainingRequests);
+    const [requestData, collectorData] = await Promise.all([
+        getRequestLimitData(),
+        getIssueCollectorData(),
+    ]);
+    const usedRequests = getUsedRequests(requestData);
+    const remainingRequests = getRemainingRequests(requestData.dailyLimit, usedRequests);
+    renderRequestPageState(elements, usedRequests, remainingRequests, requestData.dailyLimit, collectorData);
+}
+
+/**
+ * load issue collector config from Firebase.
+ * @returns {Promise<{email: string, mailSubject: string}>}
+ */
+async function getIssueCollectorData() {
+    try {
+        const response = await fetch(`${FIREBASE_BASE_URL}/${ISSUE_COLLECTOR_PATH}.json`);
+        if (!response.ok) {
+            throw new Error(`Firebase request failed: ${response.status}`);
+        }
+        const data = await response.json();
+        return { email: data?.email || 'albachi@gmx.at', mailSubject: data?.mailSubject || 'New Request', };
+    } catch (error) {
+        return { email: 'albachi@gmx.at', mailSubject: 'New Request', };
+    }
 }
 
 /**
@@ -44,20 +66,51 @@ function areRequiredElementsAvailable(elements) {
 }
 
 /**
+ * load current request limit data from Firebase.
+ * @returns {Promise<{dailyLimit: number, currentDate: string, requestCount: number}>}
+ */
+async function getRequestLimitData() {
+    try {
+        const response = await fetch(`${FIREBASE_BASE_URL}/${REQUEST_LIMIT_PATH}.json`);
+        if (!response.ok) {
+            throw new Error(`Firebase request failed: ${response.status}`);
+        }
+        const data = await response.json();
+        return normalizeRequestLimitData(data);
+    } catch (error) {
+        return { dailyLimit: 10, currentDate: getTodayKey(), requestCount: 0, };
+    }
+}
+
+/**
+ * normalize raw Firebase request limit data.
+ * @param {object | null} data
+ * @returns {{dailyLimit: number, currentDate: string, requestCount: number}}
+ */
+function normalizeRequestLimitData(data) {
+    return {
+        dailyLimit: Number(data?.dailyLimit) || 10,
+        currentDate: data?.currentDate || '',
+        requestCount: Number(data?.requestCount) || 0,
+    };
+}
+
+/**
  * render complete request page state.
  * @param {object} elements
  * @param {number} usedRequests
  * @param {number} remainingRequests
+ * @param {number} dailyLimit
  */
-function renderRequestPageState(elements, usedRequests, remainingRequests) {
+function renderRequestPageState(elements, usedRequests, remainingRequests, dailyLimit, collectorData) {
     toggleRequestState(
         elements.requestOpenView,
         elements.requestClosedView,
         remainingRequests
     );
-    updateCounterState(elements.requestCounter, usedRequests);
-    updateLimitText(elements.limitTextElement, usedRequests);
-    updateCreateRequestLink(elements.createRequestLink, remainingRequests);
+    updateCounterState(elements.requestCounter, usedRequests, dailyLimit);
+    updateLimitText(elements.limitTextElement, usedRequests, dailyLimit);
+    updateCreateRequestLink(elements.createRequestLink, remainingRequests, collectorData);
 }
 
 /**
@@ -98,9 +151,10 @@ function showClosedRequestView(requestOpenView, requestClosedView) {
  * helper function for page initialization; show counter color depending on current request usage.
  * @param {HTMLElement} requestCounter
  * @param {number} usedRequests
+ * @param {number} dailyLimit
  */
-function updateCounterState(requestCounter, usedRequests) {
-    if (usedRequests >= dailyRequestLimit) {
+function updateCounterState(requestCounter, usedRequests, dailyLimit) {
+    if (usedRequests >= dailyLimit) {
         setCounterClosedState(requestCounter);
         return;
     }
@@ -124,127 +178,48 @@ function setCounterOpenState(requestCounter) {
 }
 
 /**
- * helper function for page initialization; get stored request counter for current day.
- * @returns {{date: string, count: number}}
- */
-function getStoredRequestData() {
-    const today = getTodayKey();
-    const rawData = localStorage.getItem(storageKey);
-    if (!rawData) {
-        return createAndSaveDefaultRequestData(today);
-    }
-    return parseStoredRequestData(rawData, today);
-}
-
-/**
- * parse stored request data and reset if invalid or outdated.
- * @param {string} rawData
- * @param {string} today
- * @returns {{date: string, count: number}}
- */
-function parseStoredRequestData(rawData, today) {
-    try {
-        const parsedData = JSON.parse(rawData);
-        return validateStoredRequestData(parsedData, today);
-    } catch (error) {
-        return createAndSaveDefaultRequestData(today);
-    }
-}
-
-/**
- * validate stored request data for current day.
- * @param {object} parsedData
- * @param {string} today
- * @returns {{date: string, count: number}}
- */
-function validateStoredRequestData(parsedData, today) {
-    if (parsedData.date !== today) {
-        return createAndSaveDefaultRequestData(today);
-    }
-    return createRequestDataObject(parsedData.date, parsedData.count);
-}
-
-/**
- * create, save and return default request data.
- * @param {string} today
- * @returns {{date: string, count: number}}
- */
-function createAndSaveDefaultRequestData(today) {
-    const defaultData = createDefaultRequestData(today);
-    saveRequestData(defaultData);
-    return defaultData;
-}
-
-/**
- * helper function for "getStoredRequestData"; create default request data object.
- * @param {string} date
- * @returns {{date: string, count: number}}
- */
-function createDefaultRequestData(date) {
-    return {
-        date,
-        count: 0,
-    };
-}
-
-/**
- * create normalized request data object.
- * @param {string} date
- * @param {number} count
- * @returns {{date: string, count: number}}
- */
-function createRequestDataObject(date, count) {
-    return {
-        date,
-        count: Number(count) || 0,
-    };
-}
-
-/**
- * helper function for request data handling; save request data in localStorage.
- * @param {object} data
- */
-function saveRequestData(data) {
-    localStorage.setItem(storageKey, JSON.stringify(data));
-}
-
-/**
- * helper function for request data handling; get number of used requests.
- * @param {number} count
+ * helper function for request data handling; get number of used requests for current day.
+ * @param {{dailyLimit: number, currentDate: string, requestCount: number}} requestData
  * @returns {number}
  */
-function getUsedRequests(count) {
-    return Math.min(dailyRequestLimit, Math.max(0, Number(count) || 0));
+function getUsedRequests(requestData) {
+    if (requestData.currentDate !== getTodayKey()) {
+        return 0;
+    }
+    return Math.min(requestData.dailyLimit, Math.max(0, requestData.requestCount));
 }
 
 /**
  * helper function for request data handling; calculate remaining requests.
+ * @param {number} dailyLimit
  * @param {number} usedRequests
  * @returns {number}
  */
-function getRemainingRequests(usedRequests) {
-    return Math.max(0, dailyRequestLimit - usedRequests);
+function getRemainingRequests(dailyLimit, usedRequests) {
+    return Math.max(0, dailyLimit - usedRequests);
 }
 
 /**
  * helper function for page initialization; update request limit text.
  * @param {HTMLElement} limitTextElement
  * @param {number} usedRequests
+ * @param {number} dailyLimit
  */
-function updateLimitText(limitTextElement, usedRequests) {
-    limitTextElement.innerHTML = buildLimitTextMarkup(usedRequests);
+function updateLimitText(limitTextElement, usedRequests, dailyLimit) {
+    limitTextElement.innerHTML = buildLimitTextMarkup(usedRequests, dailyLimit);
 }
 
 /**
  * build markup for used requests text.
  * @param {number} usedRequests
+ * @param {number} dailyLimit
  * @returns {string}
  */
-function buildLimitTextMarkup(usedRequests) {
+function buildLimitTextMarkup(usedRequests, dailyLimit) {
     return `
         <span id="requests-left" class="request-counter-value">${usedRequests}</span>
         <span class="request-counter-suffix">
-            of <span class="request-counter-max">${dailyRequestLimit}</span> requests used today
+            of <span class="request-counter-max">${dailyLimit}</span> requests used today
         </span>
     `;
 }
@@ -254,25 +229,30 @@ function buildLimitTextMarkup(usedRequests) {
  * @param {HTMLElement | null} createRequestLink
  * @param {number} remainingRequests
  */
-function updateCreateRequestLink(createRequestLink, remainingRequests) {
+function updateCreateRequestLink(createRequestLink, remainingRequests, collectorData) {
     if (!createRequestLink || remainingRequests <= 0) return;
-    updateMailLink(createRequestLink);
+    updateMailLink(createRequestLink, collectorData);
 }
 
 /**
  * helper function for page initialization; set mailto link for request creation.
  * @param {HTMLElement} createRequestLink
  */
-function updateMailLink(createRequestLink) {
-    createRequestLink.setAttribute('href', buildMailToLink());
+function updateMailLink(createRequestLink, collectorData) {
+    createRequestLink.setAttribute('href', buildMailToLink(collectorData));
 }
 
 /**
  * build mailto link for request creation.
  * @returns {string}
  */
-function buildMailToLink() {
-    return 'mailto:requests@example.com?subject=New%20Request&body=Hello%20Join%20team,%0A%0AI%20would%20like%20to%20submit%20the%20following%20request:%0A%0A';
+function buildMailToLink(collectorData) {
+    const email = encodeURIComponent(collectorData.email);
+    const subject = encodeURIComponent(collectorData.mailSubject);
+    const body = encodeURIComponent(
+        'Hello Join team,\n\nI would like to submit the following request:\n\n'
+    );
+    return `mailto:${email}?subject=${subject}&body=${body}`;
 }
 
 /**
@@ -310,31 +290,4 @@ function getPaddedMonth(today) {
  */
 function getPaddedDay(today) {
     return String(today.getDate()).padStart(2, '0');
-}
-
-/**
- * create request data for fully used daily limit.
- * @returns {{date: string, count: number}}
- */
-function createClosedRequestData() {
-    return {
-        date: getTodayKey(),
-        count: dailyRequestLimit,
-    };
-}
-
-/**
- * helper function for testing; force open request state and reload page.
- */
-function setOpenStateForTesting() {
-    saveRequestData(createDefaultRequestData(getTodayKey()));
-    location.reload();
-}
-
-/**
- * helper function for testing; force closed request state and reload page.
- */
-function setClosedStateForTesting() {
-    saveRequestData(createClosedRequestData());
-    location.reload();
 }
