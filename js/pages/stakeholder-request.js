@@ -5,24 +5,52 @@ const ISSUE_COLLECTOR_PATH = 'issueCollector';
 document.addEventListener('DOMContentLoaded', initStakeholderRequestPage);
 
 /**
- * onload-function: initialize stakeholder request page and show current request state.
- * @returns {Promise<void>}
+ * Initializes the stakeholder request page by loading the current request limit data,
+ * synchronizing it with the current day, and rendering the page state accordingly.
+ * @returns {Promise<void>} Resolves when the page has been fully initialized.
  */
 async function initStakeholderRequestPage() {
     const elements = getStakeholderElements();
     if (!areRequiredElementsAvailable(elements)) return;
-    const [requestData, collectorData] = await Promise.all([
-        getRequestLimitData(),
-        getIssueCollectorData(),
-    ]);
+    const [rawRequestData, collectorData] = await Promise.all([getRequestLimitData(), getIssueCollectorData(),]);
+    const requestData = await ensureCurrentRequestLimitData(rawRequestData);
     const usedRequests = getUsedRequests(requestData);
     const remainingRequests = getRemainingRequests(requestData.dailyLimit, usedRequests);
-    renderRequestPageState(elements, usedRequests, remainingRequests, requestData.dailyLimit, collectorData);
+    renderRequestPageState(
+        elements,
+        usedRequests,
+        remainingRequests,
+        requestData.dailyLimit,
+        collectorData
+    );
 }
 
 /**
- * load issue collector config from Firebase.
- * @returns {Promise<{email: string, mailSubject: string}>}
+ * Ensures that the request limit data matches the current day.
+ * If the stored date is outdated, the Firebase data is reset for today
+ * with the existing daily limit and a request count of 0.
+ * @param {{dailyLimit: number, currentDate: string, requestCount: number}} requestData - The current request limit data.
+ * @returns {Promise<{dailyLimit: number, currentDate: string, requestCount: number}>} The current or reset request limit data.
+ */
+async function ensureCurrentRequestLimitData(requestData) {
+    if (requestData.currentDate === getTodayKey()) {
+        return requestData;
+    }
+    const resetData = { dailyLimit: requestData.dailyLimit || 10, currentDate: getTodayKey(), requestCount: 0, };
+    try {
+        await fetch(`${FIREBASE_BASE_URL}/${REQUEST_LIMIT_PATH}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(resetData),
+        });
+        return resetData;
+    } catch (error) { return resetData; }
+}
+
+/**
+ * Loads the issue collector configuration from Firebase.
+ * Falls back to default values if the request fails or no valid data is available.
+ * @returns {Promise<{email: string, mailSubject: string}>} The issue collector email configuration.
  */
 async function getIssueCollectorData() {
     try {
@@ -38,23 +66,31 @@ async function getIssueCollectorData() {
 }
 
 /**
- * collect all required DOM elements for stakeholder request page.
- * @returns {object}
+ * Collects all required DOM elements for the stakeholder request page.
+ * @returns {{
+ *   requestCounter: HTMLElement | null,
+ *   limitTextElement: HTMLElement | null,
+ *   createRequestLink: HTMLElement | null,
+ *   createRequestLinkClosed: HTMLElement | null,
+ *   requestOpenView: HTMLElement | null,
+ *   requestClosedView: HTMLElement | null
+ * }} The relevant DOM elements used on the page.
  */
 function getStakeholderElements() {
     return {
         requestCounter: document.querySelector('.request-counter'),
         limitTextElement: document.getElementById('stakeholder-limit-text'),
         createRequestLink: document.getElementById('create-request-link'),
+        createRequestLinkClosed: document.getElementById('create-request-link-closed'),
         requestOpenView: document.getElementById('request-open-view'),
         requestClosedView: document.getElementById('request-closed-view'),
     };
 }
 
 /**
- * check if all required DOM elements are available.
- * @param {object} elements
- * @returns {boolean}
+ * Checks whether all required DOM elements for page initialization are available.
+ * @param {object} elements - The collected DOM elements.
+ * @returns {boolean} True if all required elements exist, otherwise false.
  */
 function areRequiredElementsAvailable(elements) {
     return !!(
@@ -66,8 +102,9 @@ function areRequiredElementsAvailable(elements) {
 }
 
 /**
- * load current request limit data from Firebase.
- * @returns {Promise<{dailyLimit: number, currentDate: string, requestCount: number}>}
+ * Loads the current request limit data from Firebase.
+ * Falls back to a default request limit object if the request fails.
+ * @returns {Promise<{dailyLimit: number, currentDate: string, requestCount: number}>} The normalized request limit data.
  */
 async function getRequestLimitData() {
     try {
@@ -83,9 +120,10 @@ async function getRequestLimitData() {
 }
 
 /**
- * normalize raw Firebase request limit data.
- * @param {object | null} data
- * @returns {{dailyLimit: number, currentDate: string, requestCount: number}}
+ * Normalizes raw Firebase request limit data into a stable internal structure.
+ * Ensures fallback values for missing or invalid fields.
+ * @param {object | null} data - The raw request limit data from Firebase.
+ * @returns {{dailyLimit: number, currentDate: string, requestCount: number}} The normalized request limit data.
  */
 function normalizeRequestLimitData(data) {
     return {
@@ -96,11 +134,13 @@ function normalizeRequestLimitData(data) {
 }
 
 /**
- * render complete request page state.
- * @param {object} elements
- * @param {number} usedRequests
- * @param {number} remainingRequests
- * @param {number} dailyLimit
+ * Renders the complete stakeholder request page state,
+ * including visibility, counter styling, limit text, and request links.
+ * @param {object} elements - The DOM elements used for rendering.
+ * @param {number} usedRequests - The number of requests already used today.
+ * @param {number} remainingRequests - The number of requests still available today.
+ * @param {number} dailyLimit - The maximum number of requests allowed per day.
+ * @param {{email: string, mailSubject: string}} collectorData - The issue collector configuration.
  */
 function renderRequestPageState(elements, usedRequests, remainingRequests, dailyLimit, collectorData) {
     toggleRequestState(
@@ -110,14 +150,14 @@ function renderRequestPageState(elements, usedRequests, remainingRequests, daily
     );
     updateCounterState(elements.requestCounter, usedRequests, dailyLimit);
     updateLimitText(elements.limitTextElement, usedRequests, dailyLimit);
-    updateCreateRequestLink(elements.createRequestLink, remainingRequests, collectorData);
+    updateCreateRequestLinks(elements.createRequestLink, elements.createRequestLinkClosed, remainingRequests, collectorData);
 }
 
 /**
- * helper function for page initialization; show request state depending on remaining daily quota.
- * @param {HTMLElement} requestOpenView
- * @param {HTMLElement} requestClosedView
- * @param {number} remainingRequests
+ * Toggles the open or closed request view depending on the remaining daily quota.
+ * @param {HTMLElement} requestOpenView - The container shown when requests are still available.
+ * @param {HTMLElement} requestClosedView - The container shown when the request limit has been reached.
+ * @param {number} remainingRequests - The number of requests still available today.
  */
 function toggleRequestState(requestOpenView, requestClosedView, remainingRequests) {
     if (remainingRequests > 0) {
@@ -128,9 +168,9 @@ function toggleRequestState(requestOpenView, requestClosedView, remainingRequest
 }
 
 /**
- * show open request state view.
- * @param {HTMLElement} requestOpenView
- * @param {HTMLElement} requestClosedView
+ * Displays the open request state and hides the closed request state.
+ * @param {HTMLElement} requestOpenView - The open state container.
+ * @param {HTMLElement} requestClosedView - The closed state container.
  */
 function showOpenRequestView(requestOpenView, requestClosedView) {
     requestOpenView.classList.remove('d-none');
@@ -138,9 +178,9 @@ function showOpenRequestView(requestOpenView, requestClosedView) {
 }
 
 /**
- * show closed request state view.
- * @param {HTMLElement} requestOpenView
- * @param {HTMLElement} requestClosedView
+ * Displays the closed request state and hides the open request state.
+ * @param {HTMLElement} requestOpenView - The open state container.
+ * @param {HTMLElement} requestClosedView - The closed state container.
  */
 function showClosedRequestView(requestOpenView, requestClosedView) {
     requestOpenView.classList.add('d-none');
@@ -148,10 +188,10 @@ function showClosedRequestView(requestOpenView, requestClosedView) {
 }
 
 /**
- * helper function for page initialization; show counter color depending on current request usage.
- * @param {HTMLElement} requestCounter
- * @param {number} usedRequests
- * @param {number} dailyLimit
+ * Updates the visual state of the request counter based on the current usage.
+ * @param {HTMLElement} requestCounter - The counter element.
+ * @param {number} usedRequests - The number of requests already used today.
+ * @param {number} dailyLimit - The maximum number of requests allowed per day.
  */
 function updateCounterState(requestCounter, usedRequests, dailyLimit) {
     if (usedRequests >= dailyLimit) {
@@ -162,25 +202,27 @@ function updateCounterState(requestCounter, usedRequests, dailyLimit) {
 }
 
 /**
- * set counter style to closed state.
- * @param {HTMLElement} requestCounter
+ * Applies the closed-state styling to the request counter.
+ * @param {HTMLElement} requestCounter - The counter element.
  */
 function setCounterClosedState(requestCounter) {
     requestCounter.classList.add('is-closed');
 }
 
 /**
- * set counter style to open state.
- * @param {HTMLElement} requestCounter
+ * Applies the open-state styling to the request counter.
+ * @param {HTMLElement} requestCounter - The counter element.
  */
 function setCounterOpenState(requestCounter) {
     requestCounter.classList.remove('is-closed');
 }
 
 /**
- * helper function for request data handling; get number of used requests for current day.
- * @param {{dailyLimit: number, currentDate: string, requestCount: number}} requestData
- * @returns {number}
+ * Returns the number of used requests for the current day.
+ * If the stored data belongs to a different day, 0 is returned.
+ * The result is clamped between 0 and the configured daily limit.
+ * @param {{dailyLimit: number, currentDate: string, requestCount: number}} requestData - The request limit data.
+ * @returns {number} The number of used requests for today.
  */
 function getUsedRequests(requestData) {
     if (requestData.currentDate !== getTodayKey()) {
@@ -190,30 +232,31 @@ function getUsedRequests(requestData) {
 }
 
 /**
- * helper function for request data handling; calculate remaining requests.
- * @param {number} dailyLimit
- * @param {number} usedRequests
- * @returns {number}
+ * Calculates the number of remaining requests for the current day.
+ * The result is never lower than 0.
+ * @param {number} dailyLimit - The maximum number of requests allowed per day.
+ * @param {number} usedRequests - The number of requests already used today.
+ * @returns {number} The number of remaining requests.
  */
 function getRemainingRequests(dailyLimit, usedRequests) {
     return Math.max(0, dailyLimit - usedRequests);
 }
 
 /**
- * helper function for page initialization; update request limit text.
- * @param {HTMLElement} limitTextElement
- * @param {number} usedRequests
- * @param {number} dailyLimit
+ * Updates the request limit text displayed on the page.
+ * @param {HTMLElement} limitTextElement - The element that shows the limit text.
+ * @param {number} usedRequests - The number of requests already used today.
+ * @param {number} dailyLimit - The maximum number of requests allowed per day.
  */
 function updateLimitText(limitTextElement, usedRequests, dailyLimit) {
     limitTextElement.innerHTML = buildLimitTextMarkup(usedRequests, dailyLimit);
 }
 
 /**
- * build markup for used requests text.
- * @param {number} usedRequests
- * @param {number} dailyLimit
- * @returns {string}
+ * Builds the HTML markup for the daily request usage display.
+ * @param {number} usedRequests - The number of requests already used today.
+ * @param {number} dailyLimit - The maximum number of requests allowed per day.
+ * @returns {string} The HTML string for the request usage text.
  */
 function buildLimitTextMarkup(usedRequests, dailyLimit) {
     return `
@@ -225,46 +268,91 @@ function buildLimitTextMarkup(usedRequests, dailyLimit) {
 }
 
 /**
- * update mail link only if requests are still available.
- * @param {HTMLElement | null} createRequestLink
- * @param {number} remainingRequests
+ * Updates the mailto links for the available request actions.
+ * The open-state link is only updated when requests are still available.
+ * The closed-state link is always updated with manual mode.
+ * @param {HTMLElement | null} createRequestLink - The link shown in the open request state.
+ * @param {HTMLElement | null} createRequestLinkClosed - The link shown in the closed request state.
+ * @param {number} remainingRequests - The number of requests still available today.
+ * @param {{email: string, mailSubject: string}} collectorData - The issue collector configuration.
  */
-function updateCreateRequestLink(createRequestLink, remainingRequests, collectorData) {
-    if (!createRequestLink || remainingRequests <= 0) return;
-    updateMailLink(createRequestLink, collectorData);
+function updateCreateRequestLinks(createRequestLink, createRequestLinkClosed, remainingRequests, collectorData) {
+    if (createRequestLink && remainingRequests > 0) {
+        updateMailLink(createRequestLink, collectorData, 'ai');
+    }
+    if (createRequestLinkClosed) {
+        updateMailLink(createRequestLinkClosed, collectorData, 'manual');
+    }
 }
 
 /**
- * helper function for page initialization; set mailto link for request creation.
- * @param {HTMLElement} createRequestLink
+ * Updates a request link with the generated mailto URL.
+ * @param {HTMLElement} createRequestLink - The link element to update.
+ * @param {{email: string, mailSubject: string}} collectorData - The issue collector configuration.
+ * @param {'ai' | 'manual'} requestMode - The request mode used to build the mailto link.
  */
-function updateMailLink(createRequestLink, collectorData) {
-    createRequestLink.setAttribute('href', buildMailToLink(collectorData));
+function updateMailLink(createRequestLink, collectorData, requestMode) {
+    createRequestLink.setAttribute('href', buildMailToLink(collectorData, requestMode));
 }
 
 /**
- * build mailto link for request creation.
- * @returns {string}
+ * Builds the complete mailto URL for creating a new request email.
+ * @param {{email: string, mailSubject: string}} collectorData - The issue collector configuration.
+ * @param {'ai' | 'manual'} requestMode - The request mode used for the email.
+ * @returns {string} The generated mailto URL.
  */
-function buildMailToLink(collectorData) {
-    const email = encodeURIComponent(collectorData.email);
-    const subject = encodeURIComponent(collectorData.mailSubject);
-    const body = encodeURIComponent(
-        'Hello Join team,\n\nI would like to submit the following request:\n\n'
-    );
-    return `mailto:${email}?subject=${subject}&body=${body}`;
+function buildMailToLink(collectorData, requestMode) {
+    const subject = buildMailSubject(collectorData.mailSubject, requestMode);
+    const body = buildMailBody(requestMode);
+
+    return `mailto:${collectorData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 /**
- * onclick-function of back button; return to index page.
+ * Builds the email subject line for a stakeholder request.
+ * Adds a mode-specific label to the configured base subject.
+ * @param {string} baseSubject - The configured base subject.
+ * @param {'ai' | 'manual'} requestMode - The request mode used for the email.
+ * @returns {string} The formatted email subject.
+ */
+function buildMailSubject(baseSubject, requestMode) {
+    const normalizedBaseSubject = baseSubject || 'Join Request';
+    const modeLabel = requestMode === 'manual' ? 'MANUAL' : 'AI';
+    return `[JOIN-ISSUE][${modeLabel}] ${normalizedBaseSubject}`;
+}
+
+/**
+ * Builds the email body template for a stakeholder request.
+ * Includes the selected request mode and source metadata.
+ * @param {'ai' | 'manual'} requestMode - The request mode used for the email.
+ * @returns {string} The formatted email body.
+ */
+function buildMailBody(requestMode) {
+    const modeLabel = requestMode === 'manual' ? 'manual' : 'ai';
+    return [
+        'Please describe your request below:',
+        '',
+        'Title:',
+        '',
+        'Description:',
+        '',
+        'Preferred deadline:',
+        '',
+        `Join Request Mode: ${modeLabel}`,
+        'Join Request Source: stakeholder-page'
+    ].join('\n');
+}
+
+/**
+ * Redirects the user back to the index page.
  */
 function goBackToIndex() {
     window.location.href = '../index.html';
 }
 
 /**
- * helper function for request data handling; get current date as key.
- * @returns {string}
+ * Returns the current date as a YYYY-MM-DD key string.
+ * @returns {string} The current date formatted as YYYY-MM-DD.
  */
 function getTodayKey() {
     const today = new Date();
@@ -275,18 +363,18 @@ function getTodayKey() {
 }
 
 /**
- * get current month as two-digit string.
- * @param {Date} today
- * @returns {string}
+ * Returns the month of the given date as a two-digit string.
+ * @param {Date} today - The date object to read the month from.
+ * @returns {string} The two-digit month value.
  */
 function getPaddedMonth(today) {
     return String(today.getMonth() + 1).padStart(2, '0');
 }
 
 /**
- * get current day as two-digit string.
- * @param {Date} today
- * @returns {string}
+ * Returns the day of the month of the given date as a two-digit string.
+ * @param {Date} today - The date object to read the day from.
+ * @returns {string} The two-digit day value.
  */
 function getPaddedDay(today) {
     return String(today.getDate()).padStart(2, '0');

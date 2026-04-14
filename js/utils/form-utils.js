@@ -1,3 +1,5 @@
+import { selectedContacts } from "../events/dropdown-menu.js";
+
 /**
  * Extracts task data from the edit form.
  * @param {HTMLFormElement} form - The form element.
@@ -60,23 +62,20 @@ function extractPriority(form) {
  * @returns {string[]} Array of assigned user IDs.
  */
 function extractAssignedUsers(form, contactsObj) {
-  const assignedOptions = form.querySelectorAll(".contact-option.assigned");
-  if (assignedOptions && contactsObj) {
-    return Array.from(assignedOptions)
-      .map((option) => {
-        const id = option.getAttribute("data-id");
-        if (id && contactsObj[id]) return id;
-        const name =
-          option.getAttribute("data-name") || option.textContent.trim();
-        return (
-          Object.entries(contactsObj).find(
-            ([cid, contact]) => contact.name === name
-          )?.[0] || null
-        );
-      })
-      .filter(Boolean);
+  if (!Array.isArray(selectedContacts) || !contactsObj) {
+    return [];
   }
-  return [];
+  return selectedContacts
+    .map((contact) => {
+      if (contact.id && contactsObj[contact.id]) {
+        return contact.id;
+      }
+      const cleanName = (contact.name || "").replace(/\s*\(You\)\s*$/, "").trim();
+      return (
+        Object.entries(contactsObj).find(([cid, storedContact]) => storedContact.name === cleanName)?.[0] || null
+      );
+    })
+    .filter(Boolean);
 }
 
 /**
@@ -118,6 +117,14 @@ function getSubtasksFromItems(form) {
     .filter((text) => text !== "");
 }
 
+/**
+ * Extracts the current subtask data from the edit form.
+ * Tries multiple DOM-based fallback strategies to collect subtask titles,
+ * and restores the existing task subtask data if no form-based subtasks are found.
+ * @param {HTMLFormElement} form - The edit form containing the subtask elements.
+ * @param {object} taskToEdit - The existing task object used as a fallback source.
+ * @returns {{totalSubtasks: string[], checkedSubtasks: boolean[]}} The extracted subtask titles and their completion states.
+ */
 function extractSubtasks(form, taskToEdit) {
   let totalSubtasks = getSubtasksFromInputs(form);
   let checkedSubtasks = Array.from(form.querySelectorAll(".subtask-text")).map(
@@ -127,12 +134,8 @@ function extractSubtasks(form, taskToEdit) {
     totalSubtasks = getSubtasksFromTextNodes(form);
     if (totalSubtasks.length === 0) totalSubtasks = getSubtasksFromItems(form);
     if (totalSubtasks.length === 0) {
-      totalSubtasks = Array.isArray(taskToEdit.totalSubtasks)
-        ? [...taskToEdit.totalSubtasks]
-        : [];
-      checkedSubtasks = Array.isArray(taskToEdit.checkedSubtasks)
-        ? [...taskToEdit.checkedSubtasks]
-        : [];
+      totalSubtasks = Array.isArray(taskToEdit.totalSubtasks) ? [...taskToEdit.totalSubtasks] : [];
+      checkedSubtasks = Array.isArray(taskToEdit.checkedSubtasks) ? [...taskToEdit.checkedSubtasks] : [];
     }
   }
   return { totalSubtasks, checkedSubtasks };
@@ -146,21 +149,18 @@ function extractSubtasks(form, taskToEdit) {
  * @returns {object} The extracted task data.
  */
 export function extractTaskFormData(form, contactsObj, taskToEdit) {
-  const title = extractTitle(form);
-  const description = extractDescription(form);
-  const deadline = extractDeadline(form);
-  const type = extractType(form);
-  const priority = extractPriority(form);
-  const assignedUsers = extractAssignedUsers(form, contactsObj);
+  const rawTitle = extractTitle(form).trim();
+  const rawDescription = extractDescription(form).trim();
+  const rawDeadline = extractDeadline(form).trim();
+  const rawType = extractType(form).trim();
+  const rawPriority = extractPriority(form).trim();
+  const rawAssignedUsers = extractAssignedUsers(form, contactsObj);
+  const title = rawTitle || taskToEdit.title || "";
+  const description = rawDescription || taskToEdit.description || "";
+  const deadline = rawDeadline || taskToEdit.deadline || "";
+  const type = rawType && rawType !== "Select task category" ? rawType : taskToEdit.type || "";
+  const priority = rawPriority || taskToEdit.priority || "medium";
+  const assignedUsers = Array.isArray(rawAssignedUsers) && rawAssignedUsers.length > 0 ? rawAssignedUsers : Array.isArray(taskToEdit.assignedUsers) ? [...taskToEdit.assignedUsers] : [];
   const { totalSubtasks, checkedSubtasks } = extractSubtasks(form, taskToEdit);
-  return {
-    title,
-    description,
-    deadline,
-    type,
-    priority,
-    assignedUsers,
-    totalSubtasks,
-    checkedSubtasks,
-  };
+  return { title, description, deadline, type, priority, assignedUsers, totalSubtasks, checkedSubtasks, };
 }

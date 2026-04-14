@@ -251,12 +251,56 @@ function updateLocalTaskColumn(taskId, firebaseColumnId) {
 }
 
 /**
- * Placeholder for the Firebase update logic after a column change.
- * @param {string} taskId - The ID of the task.
- * @param {string} firebaseColumnId - The new Firebase column ID.
- * @returns {Promise<void>} Resolves when the Firebase update is finished.
+ * Updates the task's column in Firebase after a drag-and-drop column change.
+ * If the task does not exist locally, the update is skipped.
+ * After a successful Firebase update, the local task cache is updated as well.
+ * @param {string} taskId - The ID of the task to update.
+ * @param {string} firebaseColumnId - The new column ID to store in Firebase.
+ * @returns {Promise<void>} Resolves when the Firebase update attempt is complete.
  */
-async function triggerFirebaseUpdate(taskId, firebaseColumnId) { }
+async function triggerFirebaseUpdate(taskId, firebaseColumnId) {
+  const task = tasksData[taskId];
+  if (!task) return;
+  const updatedTask = { ...task, columnID: firebaseColumnId, updatedAt: new Date().toLocaleDateString("de-DE"), };
+  try {
+    const response = await fetch(
+      `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/tasks/${taskId}.json`,
+      { method: "PUT", headers: { "Content-Type": "application/json", }, body: JSON.stringify(updatedTask), }
+    );
+    if (!response.ok) {
+      throw new Error(`Firebase update failed: ${response.status}`);
+    }
+    tasksData[taskId] = updatedTask;
+  } catch (error) {
+    console.error("Task column update failed:", error);
+  }
+}
+
+/**
+ * Creates a new status notification entry in Firebase when an external task
+ * is moved to a different column.
+ * Notifications are only created for tasks with an external creator email
+ * and only when the column actually changes.
+ * @param {string} taskId - The ID of the moved task.
+ * @param {string} previousColumnId - The previous column ID before the move.
+ * @param {string} newColumnId - The new column ID after the move.
+ * @returns {Promise<void>} Resolves when the notification creation attempt is complete.
+ */
+async function createStatusNotification(taskId, previousColumnId, newColumnId) {
+  const task = tasksData[taskId];
+  if (!task) return;
+  if (task.creatorType !== "extern" || !task.creatorEmail) return;
+  if (previousColumnId === newColumnId) return;
+  const notificationId = `notification-${Date.now()}-${taskId}`;
+  const notificationData = { taskId, taskTitle: task.title || "Task", creatorName: task.creatorName || "", creatorEmail: task.creatorEmail, creatorType: task.creatorType, creatorSource: task.creatorSource || "", previousColumnId, newColumnId, createdAt: new Date().toISOString(), processed: false, };
+  try {
+    const response = await fetch(
+      `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications/${notificationId}.json`,
+      { method: "PUT", headers: { "Content-Type": "application/json", }, body: JSON.stringify(notificationData), }
+    );
+    if (!response.ok) { throw new Error(`Status notification failed: ${response.status}`); }
+  } catch (error) { console.error("Creating status notification failed:", error); }
+}
 
 /**
  * Updates the column of a task locally, triggers the external update,
@@ -267,8 +311,10 @@ async function triggerFirebaseUpdate(taskId, firebaseColumnId) { }
  */
 export async function updateTaskColumnData(taskId, newColumnId) {
   if (!tasksData[taskId]) return;
+  const previousColumnId = tasksData[taskId].columnID;
   const firebaseColumnId = mapClientToFirebaseColumnId(newColumnId);
   if (!firebaseColumnId) return;
+  await createStatusNotification(taskId, previousColumnId, firebaseColumnId);
   updateLocalTaskColumn(taskId, firebaseColumnId);
   await triggerFirebaseUpdate(taskId, firebaseColumnId);
   await initializeBoard();

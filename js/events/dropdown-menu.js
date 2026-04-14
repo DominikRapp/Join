@@ -12,7 +12,6 @@ export function toggleDropdownIcon(id) {
   const dropdownIconContainerOne = document.getElementById("dropdown-icon-container-one");
   const dropdownIconTwo = document.getElementById("dropdown-icon-two");
   const dropdownIconContainerTwo = document.getElementById("dropdown-icon-container-two");
-
   if (id === "category" && dropdownIconTwo && dropdownIconContainerTwo) {
     dropdownIconTwo.classList.toggle("open");
     dropdownIconContainerTwo.classList.toggle("active");
@@ -28,14 +27,11 @@ export function toggleDropdownIcon(id) {
 export function toggleCategoryDropdown() {
   const wrapper = document.getElementById("category-options-wrapper");
   const container = document.getElementById("category-options-container");
-  const input = document.getElementById("dropdown-category"); 
+  const input = document.getElementById("dropdown-category");
   if (!wrapper || !container) return;
-
   const isOpen = wrapper.classList.contains("open");
-
   clearCategory();
   toggleDropdownIcon("category");
-
   if (!isOpen) {
     input.classList.add("border-light-blue");
     container.innerHTML = getCategoryOptions();
@@ -189,10 +185,10 @@ function sortContactsWithUserFirst(contacts, currentUser) {
  */
 function renderContactsList(contacts, contactContainer, currentUser) {
   contactContainer.innerHTML = '';
-  contacts.forEach((contact, i) => {
-    const { name, initials, avatarColor } = contact;
+  contacts.forEach((contact) => {
+    const { id, name, initials, avatarColor } = contact;
     const displayName = name === currentUser ? `${name} (You)` : name;
-    contactContainer.innerHTML += renderAssignedToContacts(i, displayName, initials, avatarColor);
+    contactContainer.innerHTML += renderAssignedToContacts(id, displayName, initials, avatarColor);
   });
 }
 
@@ -201,15 +197,12 @@ function renderContactsList(contacts, contactContainer, currentUser) {
  */
 export function demoSelectAssignedContact(nameToSelect = "Anna Schmidt") {
   const contactToSelect = currentContacts.find((contact) => contact.name === nameToSelect);
-
   if (!contactToSelect) {
     console.warn(`Kontakt ${nameToSelect} nicht gefunden.`);
     return;
   }
-
   selectedContacts.length = 0;
   selectedContacts.push(contactToSelect);
-
   getAssignedToOptions();
 }
 
@@ -261,7 +254,13 @@ function getContactIndex(selectedContacts, contact) {
  * @param {Array} selectedContacts - The array of selected contacts.
  */
 function addContactToSelection(contactElement, contact, selectedContacts) {
-  selectedContacts.unshift(contact);
+  const enrichedContact = {
+    id: contactElement.dataset.id || "",
+    name: contact.name,
+    initials: contact.initials,
+    avatarColor: contact.avatarColor,
+  };
+  selectedContacts.unshift(enrichedContact);
   contactElement.classList.add("assigned");
   const checkboxIcon = contactElement.querySelector(".checkbox-icon");
   checkboxIcon.src = "../assets/icons/btn/checkbox-filled-white.svg";
@@ -287,14 +286,11 @@ function removeContactFromSelection(contactElement, index, selectedContacts) {
 export function filterContacts(query) {
   const container = document.getElementById("assigned-to-options-container");
   container.innerHTML = "";
-
   const filtered = currentContacts.filter((contact) => contact.name.toLowerCase().includes(query));
-
   if (filtered.length === 0) {
     container.innerHTML = '<div class="no-results">No contacts found.</div>';
     return;
   }
-
   renderFilteredContacts(container, filtered);
 }
 
@@ -315,7 +311,6 @@ function displaySelectedContacts() {
   const assignedToArea = document.getElementById("assigned-to-area");
   const assignedToAreaFull = document.getElementById("assigned-to-area-full");
   if (!assignedToArea) return;
-
   clearAndRender(assignedToArea, selectedContacts.slice(0, 3), true);
   if (assignedToAreaFull) {
     clearAndRender(assignedToAreaFull, selectedContacts, false);
@@ -331,14 +326,11 @@ function clearAndRender(container, contacts, withExtra) {
   container.innerHTML = '';
   const mainContainer = document.createElement('div');
   mainContainer.className = 'assigned-main-container';
-
   contacts.forEach(contact => renderContactCircle(contact, mainContainer));
-
   if (withExtra) {
     const extraCount = selectedContacts.length - contacts.length;
     if (extraCount > 0) renderExtraCircle(extraCount, mainContainer);
   }
-
   container.appendChild(mainContainer);
 }
 
@@ -382,9 +374,7 @@ export function removeContact(index) {
  */
 export function clearAssignedTo() {
   const assignedToArea = document.getElementById("assigned-to-area");
-
   selectedContacts = [];
-
   if (assignedToArea) {
     assignedToArea.innerHTML = "";
   }

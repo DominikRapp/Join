@@ -179,7 +179,7 @@ export function renderAssignedToSection(task) {
             <label for="select-contacts" class="required font-size-20">Assigned to</label>
             <div class="select-wrapper input-field" id="dropdown-assigned-to" data-event-handle="true">
                 <input name="select-contacts" type="text" id="select-contacts" class="contact-input" placeholder="Select contacts to assign"
-                value="${Array.isArray(task?.assignedTo) ? task.assignedTo.join(", ") : ""}" />
+                value="" />
                 <div class="dropdown-icon-container" id="dropdown-icon-container-one">
                     <img src="../assets/icons/btn/arrow_drop_down.svg" alt="Dropdown Arrow" class="dropdown-icon" id="dropdown-icon-one" />
                 </div>
@@ -201,10 +201,10 @@ export function renderCategorySection(task) {
     return `
         <div class="label-container">
             <div for="dropdown-category" class="required font-size-20">Category</div>
-            <input type="hidden" id="hidden-category-input" value="${task?.category || ""}" />
+            <input type="hidden" id="hidden-category-input" value="${task?.type || ""}" />
             <div tabindex="0" class="select-wrapper input-field z-index-20" id="dropdown-category" name="category" data-event-handle="true">
                 <div class="selected-option"
-                    id="selected-category">${task?.category ? task.category : "Select task category"}</div>
+                    id="selected-category">${task?.type ? task.type : "Select task category"}</div>
                 <div class="dropdown-icon-container" id="dropdown-icon-container-two">
                     <img src="../assets/icons/btn/arrow_drop_down.svg" alt="Dropdown Arrow" class="dropdown-icon" id="dropdown-icon-two"/>
                 </div>
@@ -346,11 +346,11 @@ export function getCategoryOptions() {
  * @param {string} avatarColor - The avatar color of the contact.
  * @returns {string} The HTML string for the contact option.
  */
-export function renderAssignedToContacts(id, name, initials, avatarColor) {
+export function renderAssignedToContacts(contactId, name, initials, avatarColor) {
     const isSelected = isContactSelected(name, initials, avatarColor);
     return `
         <div tabindex="0" class="contact-option ${isSelected ? "assigned" : ""}"
-          data-id="${id}" data-name="${name}" data-initials="${initials}" data-avatar-color="${avatarColor}">
+          data-id="${contactId}" data-name="${name}" data-initials="${initials}" data-avatar-color="${avatarColor}">
             <div class="contact-checkbox">
                 <div class="initials-container">
                 <div class="assigned-initials-circle"style="background-color: var(${avatarColor});">${initials}</div>

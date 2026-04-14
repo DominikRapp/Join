@@ -44,14 +44,7 @@ export function setupTaskEditFormListener(
   const taskEditForm = container.querySelector("#add-task-form");
   if (taskEditForm) {
     taskEditForm.addEventListener("submit", (formEvent) =>
-      handleTaskEditFormSubmit(
-        formEvent,
-        taskEditForm,
-        taskToEdit,
-        taskToEditId,
-        boardData,
-        updateBoardFunction
-      )
+      handleTaskEditFormSubmit(formEvent, taskEditForm, taskToEdit, taskToEditId, boardData, updateBoardFunction)
     );
   }
 }
@@ -66,14 +59,7 @@ export function setupTaskEditFormListener(
  * @param {function} updateBoardFunction - Callback to update the board.
  * @returns {Promise<void>} Resolves when the form is processed.
  */
-export async function handleTaskEditFormSubmit(
-  formEvent,
-  taskEditForm,
-  taskToEdit,
-  taskToEditId,
-  boardData,
-  updateBoardFunction
-) {
+export async function handleTaskEditFormSubmit(formEvent, taskEditForm, taskToEdit, taskToEditId, boardData, updateBoardFunction) {
   if (!isSubmitEvent(formEvent)) return;
   formEvent.preventDefault();
   const fetchData = window.firebaseData || boardData;
@@ -88,6 +74,13 @@ export async function handleTaskEditFormSubmit(
   renderDetailOverlay(taskToEditId, boardData, updateBoardFunction);
 }
 
+/**
+ * Checks whether the triggered form event was caused by a valid submit button.
+ * Prevents the default event behavior and returns false if no submitter exists
+ * or if the submitter is not of type "submit".
+ * @param {SubmitEvent} formEvent - The form submit event to validate.
+ * @returns {boolean} True if the event was triggered by a valid submit button, otherwise false.
+ */
 function isSubmitEvent(formEvent) {
   const submitter = formEvent.submitter;
   if (!submitter || submitter.type !== "submit") {
@@ -97,25 +90,33 @@ function isSubmitEvent(formEvent) {
   return true;
 }
 
+/**
+ * Builds the updated task object for edit mode by merging the submitted form data
+ * with the existing task data and preserving fallback values where needed.
+ * Also recalculates the completed subtask count and updates the timestamp.
+ * @param {object} formData - The normalized form data submitted by the user.
+ * @param {object} taskToEdit - The existing task object that is being edited.
+ * @returns {object} The merged task object with updated values.
+ */
 function buildEditTaskObject(formData, taskToEdit) {
-  const subtasksCompleted = formData.checkedSubtasks.filter(Boolean).length;
+  const checkedSubtasks = Array.isArray(formData.checkedSubtasks) ? formData.checkedSubtasks : Array.isArray(taskToEdit.checkedSubtasks) ? [...taskToEdit.checkedSubtasks] : [];
+  const totalSubtasks = Array.isArray(formData.totalSubtasks) ? formData.totalSubtasks : Array.isArray(taskToEdit.totalSubtasks) ? [...taskToEdit.totalSubtasks] : [];
+  const subtasksCompleted = checkedSubtasks.filter(Boolean).length;
   const updatedAt = getFormattedDate();
   return {
     ...taskToEdit,
-    assignedUsers: Array.isArray(formData.assignedUsers)
-      ? formData.assignedUsers
-      : [],
+    assignedUsers: Array.isArray(formData.assignedUsers) && formData.assignedUsers.length > 0 ? formData.assignedUsers : Array.isArray(taskToEdit.assignedUsers) ? [...taskToEdit.assignedUsers] : [],
     boardID: taskToEdit.boardID || "board-1",
-    checkedSubtasks: formData.checkedSubtasks,
+    checkedSubtasks,
     columnID: taskToEdit.columnID || "triage",
     createdAt: taskToEdit.createdAt || updatedAt,
-    deadline: formData.deadline,
-    description: formData.description,
-    priority: formData.priority,
+    deadline: formData.deadline || taskToEdit.deadline || "",
+    description: formData.description || taskToEdit.description || "",
+    priority: formData.priority || taskToEdit.priority || "medium",
     subtasksCompleted,
-    title: formData.title,
-    totalSubtasks: formData.totalSubtasks,
-    type: formData.type,
+    title: formData.title || taskToEdit.title || "",
+    totalSubtasks,
+    type: formData.type || taskToEdit.type || "",
     updatedAt,
   };
 }

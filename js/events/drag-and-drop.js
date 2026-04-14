@@ -1,4 +1,3 @@
-import { CWDATA } from "../data/task-to-firbase.js";
 import { updateTaskColumnData } from "../ui/render-board.js";
 
 let currentDraggedElement = null;
@@ -64,7 +63,6 @@ function dragEnd(event) {
   removeDraggingClass(event.target);
   currentDraggedElement = null;
   removeDragOverFromColumns();
-  updateTaskAfterDragEnd(event);
 }
 
 /**
@@ -86,54 +84,6 @@ function removeDragOverFromColumns() {
       column.classList.remove("drag-over");
     }
   });
-}
-
-/**
- * Updates the dragged task with its current column and saves the changes.
- * @param {DragEvent} event - The drag end event of the task card.
- */
-function updateTaskAfterDragEnd(event) {
-  const taskId = event.target.id;
-  const allData = window.allData;
-  if (!doesTaskExist(allData, taskId)) return;
-  const task = allData.tasks[taskId];
-  const newColumn = event.target.closest(".task-column");
-  const updatedTaskObj = createUpdatedTaskObject(task, newColumn);
-  CWDATA({ [taskId]: updatedTaskObj }, allData);
-}
-
-/**
- * Checks whether the task exists in the global task data.
- * @param {Object} allData - The global application data.
- * @param {string} taskId - The ID of the task.
- * @returns {boolean} True if the task exists, otherwise false.
- */
-function doesTaskExist(allData, taskId) {
-  return !!(allData && allData.tasks && allData.tasks[taskId]);
-}
-
-/**
- * Creates an updated task object with the current column assignment.
- * @param {Object} task - The original task data.
- * @param {HTMLElement|null} newColumn - The current column element of the task.
- * @returns {Object} The updated task object.
- */
-function createUpdatedTaskObject(task, newColumn) {
-  return {
-    assignedUsers: task.assignedUsers,
-    boardID: task.boardID || "board-1",
-    checkedSubtasks: task.checkedSubtasks,
-    columnID: newColumn ? mapClientToFirebaseColumnId(newColumn.id) : task.columnID,
-    createdAt: task.createdAt,
-    deadline: task.deadline,
-    description: task.description,
-    priority: task.priority,
-    subtasksCompleted: task.subtasksCompleted,
-    title: task.title,
-    totalSubtasks: task.totalSubtasks,
-    type: task.type,
-    updatedAt: task.updatedAt,
-  };
 }
 
 /** * Allows dropping on the target element.
@@ -187,11 +137,7 @@ async function handleDropMove(draggedElement, targetColumn, taskId) {
     if (newColumnId !== oldColumnId) {
       targetColumn.appendChild(draggedElement);
       if (allData && allData.tasks && allData.tasks[taskId]) {
-        const task = allData.tasks[taskId];
-        const firebaseColumnId = mapClientToFirebaseColumnId(newColumnId);
-        task.columnID = firebaseColumnId;
         await updateTaskColumnData(taskId, newColumnId);
-        CWDATA({ [taskId]: task }, allData);
       }
     }
   }

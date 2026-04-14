@@ -170,7 +170,7 @@ async function initSubtaskModule(container) {
 async function initAssignedContactsModule(task) {
   if (
     typeof addAssignedContactsToEditForm === "function" &&
-    Array.isArray(task.assignedTo)
+    Array.isArray(task.assignedUsers)
   ) {
     let contacts = [];
     try {
@@ -178,7 +178,7 @@ async function initAssignedContactsModule(task) {
     } catch (e) {
       console.error("Error loading contacts:", e);
     }
-    addAssignedContactsToEditForm(task.assignedTo, contacts);
+    addAssignedContactsToEditForm(task.assignedUsers, contacts);
   }
 }
 
@@ -331,10 +331,3 @@ function getFormattedDate() {
   const year = now.getFullYear();
   return `${day}.${month}.${year}`;
 }
-
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("save-edit-task-btn")) {
-    const taskId = e.target.getAttribute("data-task-id");
-    saveEditedTask(taskId);
-  }
-});
