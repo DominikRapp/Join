@@ -1,0 +1,619 @@
+{
+  "name": "Join - KI Verarbeitung von Mails",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -832,
+        16
+      ],
+      "id": "681f6013-4fb1-43f1-89df-b2c934f59232",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "replace-with-your-credential-id",
+          "name": "IMAP credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a data extraction assistant for the Join Issue Collector.\n\nRead the incoming email and return only final structured ticket data.\n\nRules:\n- Output real values only.\n- title must be in English and very short.\n- title maximum 4 words.\n- description must be in English and short.\n- description maximum 2 sentences plus the final AI note.\n- description must end exactly with: This ticket was AI-generated.\n- priority must be exactly one of: urgent, medium, low\n- type must be exactly one of: Technical Task, User Story, Meeting\n- Choose the most fitting type based on the email content:\n  - User Story = feature request, user need, improvement request, bug report, usability issue\n  - Technical Task = technical implementation, setup, refactoring, integration, configuration\n  - Meeting = coordination, discussion, appointment, alignment\n- Never output Bug Request.\n- If the email describes an error, defect, failure or broken behavior, classify it as Technical Task.\n- deadline only if clearly mentioned in the email, otherwise empty string\n\nEmail:\nFrom: {{ $('Email Trigger (IMAP)').item.json.from }}\nSubject: {{ $('Email Trigger (IMAP)').item.json.subject }}\nBody: {{ $('Email Trigger (IMAP)').item.json.textPlain }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        16
+      ],
+      "id": "dd975d2b-2397-4e61-aec5-451aa74fb8a1",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"Contact Form Error\",\n  \"description\": \"The contact form does not save requests and does not show a confirmation message. This ticket was AI-generated.\",\n  \"priority\": \"urgent\",\n  \"type\": \"Technical Task\",\n  \"deadline\": \"15.04.2026\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        304
+      ],
+      "id": "cf2ad084-600d-4ced-aa65-9209789de840",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        304
+      ],
+      "id": "c878fa66-d84e-42e1-9eca-73a67e2a16ba",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "replace-with-your-credential-id",
+          "name": "Google Gemini credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/.json",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "9af1a255-12de-4ed9-9a6f-54fd133b6198",
+      "name": "HTTP Request Load Firebase Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Validates the current daily AI request limit based on Firebase data.\n *\n * Purpose:\n * - Reads the persisted email request limit configuration\n * - Resets the daily counter automatically when the date changes\n * - Exposes whether the AI daily limit has already been reached\n *\n * Output:\n * - firebaseData: complete Firebase snapshot\n * - currentDate: normalized current date for limit tracking\n * - requestCount: current number of AI-created requests today\n * - dailyLimit: maximum allowed AI-created requests per day\n * - limitReached: true when no more AI tickets may be generated today\n */\n\nconst firebaseData = $json;\nconst today = new Date().toISOString().slice(0, 10);\nconst limitData = firebaseData.emailRequestLimit || {};\nlet currentDate = limitData.currentDate || today;\nlet requestCount = Number(limitData.requestCount || 0);\nconst dailyLimit = Number(limitData.dailyLimit || 10);\n\nif (currentDate !== today) {\n  currentDate = today;\n  requestCount = 0;\n}\n\nreturn [\n  {\n    json: {\n      firebaseData,\n      currentDate,\n      requestCount,\n      dailyLimit,\n      limitReached: requestCount >= dailyLimit\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "11b94668-0bdf-4d15-97e6-50213dc206a4",
+      "name": "Check Daily Limit"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f7f698a8-46ba-41e1-9839-b750ced9ea62",
+              "leftValue": "={{ $json.limitReached }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "7ff6f186-11da-40dc-bac1-92c71311e8da",
+      "name": "If Limit Reached?"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Builds the final Firebase ticket payload for an AI-generated request.\n *\n * Purpose:\n * - Creates the next task id from taskMeta.nextTaskNumber\n * - Extracts sender name and sender email from the incoming mail\n * - Maps AI output to the Join task structure\n * - Applies default metadata for externally created email tickets\n *\n * Output:\n * - nextTaskId: generated Firebase task key\n * - nextTaskNumber: current numeric task counter\n * - ticket: complete Join-compatible task object\n * - limit context values for later workflow steps\n */\n\nconst source = $(\"Check Daily Limit\").item.json;\nconst email = $(\"Email Trigger (IMAP)\").item.json;\nconst ai = $json.output;\nconst firebaseData = source.firebaseData;\nconst nextTaskNumber = Number(firebaseData.taskMeta?.nextTaskNumber || 1);\nconst nextTaskId = `task-${String(nextTaskNumber).padStart(3, \"0\")}`;\nconst today = new Date();\nconst formattedToday = today.toLocaleDateString(\"de-DE\");\nconst fromRaw = email.from || \"\";\nconst emailMatch = fromRaw.match(/<([^>]+)>/);\nconst creatorEmailRaw = emailMatch ? emailMatch[1].trim() : fromRaw.trim();\nconst creatorNameRaw = fromRaw\n  .replace(/<[^>]+>/, \"\")\n  .replace(/[\"']/g, \"\")\n  .trim();\nconst creatorName = creatorNameRaw || creatorEmailRaw;\nreturn [\n  {\n    json: {\n      firebaseData,\n      currentDate: source.currentDate,\n      requestCount: source.requestCount,\n      dailyLimit: source.dailyLimit,\n      nextTaskNumber,\n      nextTaskId,\n      ticket: {\n        assignedUsers: [],\n        boardID: firebaseData.issueCollector.defaults.boardID,\n        checkedSubtasks: [],\n        columnID: firebaseData.issueCollector.defaults.columnID,\n        createdAt: formattedToday,\n        creatorEmail: creatorEmailRaw,\n        creatorName,\n        creatorSource: firebaseData.issueCollector.defaults.creatorSource,\n        creatorType: firebaseData.issueCollector.defaults.creatorType,\n        deadline: ai.deadline || \"\",\n        description:\n          ai.description ||\n          \"Anfrage wurde per E-Mail eingereicht. Dieses Ticket wurde KI-generiert.\",\n        isAIGenerated: firebaseData.issueCollector.defaults.isAIGenerated,\n        priority: ai.priority || \"medium\",\n        subtasksCompleted: 0,\n        title: ai.title || \"Neue Anfrage\",\n        totalSubtasks: [],\n        type: ai.type || \"User Story\",\n        updatedAt: formattedToday,\n      },\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        0
+      ],
+      "id": "f56d5e67-cf1d-4b97-9ec4-49655d00c4b3",
+      "name": "Build AI Ticket Data"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ 'https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/tasks/' + $json.nextTaskId + '.json' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.ticket }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        928,
+        0
+      ],
+      "id": "60115e11-5ae9-4e33-b00e-06db8ae78593",
+      "name": "HTTP Request Create AI Ticket"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Increments the persisted daily AI request counter after\n * a new AI-generated ticket has been created successfully.\n *\n * Purpose:\n * - Keeps the daily limit state in sync with successful AI ticket creation\n * - Prevents additional AI-generated tickets once the configured limit is reached\n *\n * Output:\n * - currentDate: active tracking date\n * - requestCount: incremented request count\n * - dailyLimit: unchanged configured maximum\n */\n\nconst source = $('Build AI Ticket Data').item.json;\n\nreturn [\n  {\n    json: {\n      dailyLimit: source.dailyLimit,\n      currentDate: source.currentDate,\n      requestCount: Number(source.requestCount) + 1\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "c8745448-609d-48ff-8c26-767b47ce7008",
+      "name": "Build Updated Limit Data"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/emailRequestLimit.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "8616e9f3-d17b-4434-ba1b-5588ae4122de",
+      "name": "HTTP Request Update Daily Limit"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Prepares the updated taskMeta payload for Firebase.\n *\n * Purpose:\n * - Increases the global nextTaskNumber after a ticket was created\n * - Ensures the following task receives a unique sequential task id\n *\n * Output:\n * - nextTaskNumber: incremented counter for the next ticket creation\n */\n\nconst source = $('Build AI Ticket Data').item.json;\n\nreturn [\n  {\n    json: {\n      nextTaskNumber: Number(source.nextTaskNumber) + 1\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        0
+      ],
+      "id": "5bd70074-2833-4342-aead-2537982f7e1e",
+      "name": "Build Next Task Meta"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/taskMeta.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1728,
+        0
+      ],
+      "id": "8971e2c0-c53a-4d6b-980a-d22698d12fe6",
+      "name": "HTTP Request Update Task Meta"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Creates the confirmation email content for a successfully\n * AI-generated Join ticket.\n *\n * Purpose:\n * - Sends a stakeholder-facing confirmation after ticket creation\n * - Includes the generated title, category and priority\n * - Uses the original sender as recipient\n *\n * Output:\n * - toEmail: extracted sender email\n * - subject: confirmation subject line\n * - text: plain text confirmation message\n */\n\nconst email = $(\"Email Trigger (IMAP)\").item.json;\nconst ticketData = $(\"Build AI Ticket Data\").item.json;\nconst fromRaw = email.from || \"\";\nconst emailMatch = fromRaw.match(/<([^>]+)>/);\nconst senderEmail = emailMatch ? emailMatch[1].trim() : fromRaw.trim();\nconst senderNameRaw = fromRaw\n  .replace(/<[^>]+>/, \"\")\n  .replace(/[\"']/g, \"\")\n  .trim();\nconst senderName = senderNameRaw || \"there\";\n\nreturn [\n  {\n    json: {\n      toEmail: senderEmail,\n      subject: \"Your request was created as an AI ticket\",\n      text: `Hello ${senderName},\n\nthank you for your message.\n\nYour request was successfully received and created as a task in the Join board using AI.\n\nTicket title: ${ticketData.ticket.title}\nCategory: ${ticketData.ticket.type}\nPriority: ${ticketData.ticket.priority}\n\nBest regards\nJoin Team`,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        0
+      ],
+      "id": "9d45fe94-7cb4-4b3f-bbff-82923054a1c5",
+      "name": "Build AI Reply"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-demo-mail@example.com",
+        "toEmail": "={{ $json.toEmail }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2032,
+        0
+      ],
+      "id": "4fdb899e-a0d0-4f86-a952-e3674d4815af",
+      "name": "Send AI Reply",
+      "webhookId": "replace-after-import-if-needed",
+      "credentials": {
+        "smtp": {
+          "id": "replace-with-your-credential-id",
+          "name": "SMTP credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-demo-mail@example.com",
+        "toEmail": "={{ $json.toEmail }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        -240
+      ],
+      "id": "7de95f39-dfcc-4494-95ef-2e8d92773c5e",
+      "name": "Send Manual Reply",
+      "webhookId": "replace-after-import-if-needed",
+      "credentials": {
+        "smtp": {
+          "id": "replace-with-your-credential-id",
+          "name": "SMTP credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "34221f31-c043-471f-85d7-03aa7420b1ac",
+              "leftValue": "=={{ $('Email Trigger (IMAP)').item.json.subject || '' }}",
+              "rightValue": "[JOIN-ISSUE]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -640,
+        16
+      ],
+      "id": "e41d61cc-fed8-4824-bce4-87f44d0e7d1b",
+      "name": "If Join Request Mail?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eee7eb23-cc08-48f5-bb4b-218d4d5ed298",
+              "leftValue": "={{ $json.output.title || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        496,
+        16
+      ],
+      "id": "615ff199-ef2e-42a2-a8c4-671357a03568",
+      "name": "If AI Ticket Data Valid?"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Creates the stakeholder reply for cases where the\n * daily AI generation limit has already been reached.\n *\n * Purpose:\n * - Informs the sender that no additional AI ticket can be created today\n * - Confirms that the request was still received for manual handling\n *\n * Output:\n * - toEmail: extracted sender email\n * - subject: reply subject line\n * - text: plain text limit notification\n */\n\nconst email = $(\"Email Trigger (IMAP)\").item.json;\nconst fromRaw = email.from || \"\";\nconst emailMatch = fromRaw.match(/<([^>]+)>/);\nconst senderEmail = emailMatch ? emailMatch[1].trim() : fromRaw.trim();\nconst senderNameRaw = fromRaw\n  .replace(/<[^>]+>/, \"\")\n  .replace(/[\"']/g, \"\")\n  .trim();\nconst senderName = senderNameRaw || \"there\";\n\nreturn [\n  {\n    json: {\n      toEmail: senderEmail,\n      subject: \"Your request has been received\",\n      text: `Hello ${senderName},\n\nthank you for your message.\n\nThe daily limit for AI-generated tickets has already been reached today.\nYour request has still been received and will be handled manually as a task.\n\nBest regards\nJoin Team`,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -240
+      ],
+      "id": "94511476-9b30-4b0e-9ea2-3d9c9acdfa2c",
+      "name": "Build Limit Reply"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Creates the fallback reply for automatic processing failures.\n *\n * Purpose:\n * - Informs the sender that the message was received successfully\n * - Explains that automatic processing failed\n * - Signals that the team will review the request manually\n *\n * Output:\n * - toEmail: extracted sender email\n * - subject: reply subject line\n * - text: plain text manual follow-up notification\n */\n\nconst email = $('Email Trigger (IMAP)').item.json;\nconst fromRaw = email.from || '';\nconst emailMatch = fromRaw.match(/<([^>]+)>/);\nconst senderEmail = emailMatch ? emailMatch[1].trim() : fromRaw.trim();\nconst senderNameRaw = fromRaw.replace(/<[^>]+>/, '').replace(/[\"']/g, '').trim();\nconst senderName = senderNameRaw || 'there';\n\nreturn [\n  {\n    json: {\n      toEmail: senderEmail,\n      subject: 'Your request has been received',\n      text:\n`Hello ${senderName},\n\nthank you for your message.\n\nWe have received your request.\nA problem occurred during automatic processing.\nThe team has been informed and will review your request manually.\n\nBest regards\nJoin Team`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -144
+      ],
+      "id": "047bf55c-8d4e-4edd-a25b-6845b7fb5f6d",
+      "name": "Build AI Error Reply"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "If Join Request Mail?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If AI Ticket Data Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Load Firebase Data": {
+      "main": [
+        [
+          {
+            "node": "Check Daily Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Daily Limit": {
+      "main": [
+        [
+          {
+            "node": "If Limit Reached?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Limit Reached?": {
+      "main": [
+        [
+          {
+            "node": "Build Limit Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build AI Ticket Data": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Create AI Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Create AI Ticket": {
+      "main": [
+        [
+          {
+            "node": "Build Updated Limit Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Updated Limit Data": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Update Daily Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Update Daily Limit": {
+      "main": [
+        [
+          {
+            "node": "Build Next Task Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Next Task Meta": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Update Task Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Update Task Meta": {
+      "main": [
+        [
+          {
+            "node": "Build AI Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build AI Reply": {
+      "main": [
+        [
+          {
+            "node": "Send AI Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Join Request Mail?": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Load Firebase Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If AI Ticket Data Valid?": {
+      "main": [
+        [
+          {
+            "node": "Build AI Ticket Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build AI Error Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Limit Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Manual Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build AI Error Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Manual Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8b504175-d9ba-44c8-bc49-f137f48cc3c9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "removed-for-repository"
+  },
+  "id": "1OrflX3ec6M4vvV5",
+  "tags": []
+}
