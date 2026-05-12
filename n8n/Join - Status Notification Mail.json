@@ -6,8 +6,7 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 1
+              "field": "hours"
             }
           ]
         }
@@ -23,7 +22,7 @@
     },
     {
       "parameters": {
-        "url": "https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications.json",
+        "url": "https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications.json",
         "options": {
           "response": {
             "response": {
@@ -69,7 +68,7 @@
     },
     {
       "parameters": {
-        "fromEmail": "your-demo-mail@example.com",
+        "fromEmail": "albachi@gmx.at",
         "toEmail": "={{ $json.toEmail }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
@@ -84,18 +83,18 @@
       ],
       "id": "f4f874a9-e904-4d31-b70f-ed24335f36b9",
       "name": "Send Status Mail",
-      "webhookId": "replace-after-import-if-needed",
+      "webhookId": "93ff29dc-021b-4b2c-ab8c-c0aa9650c91f",
       "credentials": {
         "smtp": {
-          "id": "replace-with-your-credential-id",
-          "name": "SMTP credential"
+          "id": "oVbqEFpnJ4ZQI60s",
+          "name": "SMTP account"
         }
       }
     },
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{ 'https://your-firebase-project-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications/' + $('Build Status Mail').item.json.notificationId + '.json' }}",
+        "url": "={{ 'https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications/' + $('Build Status Mail').item.json.notificationId + '.json' }}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "{\n  \"processed\": true\n}",
@@ -174,9 +173,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "b9df9772-064b-43d9-bc34-ca585dc725cc",
+  "versionId": "6eeccfcf-dc94-4fc5-8d82-3af9e586af13",
   "meta": {
-    "instanceId": "removed-for-repository"
+    "instanceId": "33c625ad888ccfe6cb41ee4bc3e8cdd96733d93ea4a0cfb1b7ebac9038046626"
   },
   "id": "1Cd8WiVMbxE1McAD",
   "tags": []

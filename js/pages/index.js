@@ -95,18 +95,6 @@ async function startValidation(userEmail, userPw) {
 }
 
 /**
- * check in database whether a user-dataset contains the email corresponding to the login-input.
- * @param {string} category - database category to check in
- * @param {string} databaseKey - database key to check against
- * @param {string} inputString - input value from login field
- */
-// async function checkUserInFirebase(category, databaseKey, inputString) {
-//   let queryString = `?orderBy=%22${databaseKey}%22&equalTo=%22${encodeURIComponent(inputString.toLowerCase())}%22`;
-//   const data = await getFirebaseData(category, queryString);
-//   fetchedUser = data;
-// }
-
-/**
  * helper function for "checkUserInFirebase"; check whether login is valid.
  * @param {string} userPw
  */

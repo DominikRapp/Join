@@ -1,132 +1,167 @@
 @media (max-width: 1024px) {
-    h1 {
-        font-size: 42px !important;
+
+    .contacts-main h1,
+    #contactOverlay h1 {
+        font-size: 42px;
     }
 
-    h2 {
-        font-size: 36px !important;
+    .contacts-main h2,
+    #contactOverlay h2 {
+        font-size: 36px;
     }
 
-    h3 {
-        font-size: 30px !important;
+    .contacts-main h3,
+    #contactOverlay h3 {
+        font-size: 30px;
     }
 
-    h4 {
-        font-size: 24px !important;
+    .contacts-main h4,
+    #contactOverlay h4 {
+        font-size: 24px;
     }
 
-    h5 {
-        font-size: 20px !important;
+    .contacts-main h5,
+    #contactOverlay h5 {
+        font-size: 20px;
     }
 
-    h6 {
-        font-size: 17px !important;
+    .contacts-main h6,
+    #contactOverlay h6 {
+        font-size: 17px;
     }
 
-    span {
-        font-size: 16px !important;
+    .contacts-main span,
+    #contactOverlay span {
+        font-size: 16px;
     }
 }
 
 @media (max-width: 768px) {
-    h1 {
-        font-size: 36px !important;
+
+    .contacts-main h1,
+    #contactOverlay h1 {
+        font-size: 36px;
     }
 
-    h2 {
-        font-size: 32px !important;
+    .contacts-main h2,
+    #contactOverlay h2 {
+        font-size: 32px;
     }
 
-    h3 {
-        font-size: 28px !important;
+    .contacts-main h3,
+    #contactOverlay h3 {
+        font-size: 28px;
     }
 
-    h4 {
-        font-size: 22px !important;
+    .contacts-main h4,
+    #contactOverlay h4 {
+        font-size: 22px;
     }
 
-    h5 {
-        font-size: 18px !important;
+    .contacts-main h5,
+    #contactOverlay h5 {
+        font-size: 18px;
     }
 
-    h6 {
-        font-size: 16px !important;
+    .contacts-main h6,
+    #contactOverlay h6 {
+        font-size: 16px;
     }
 
-    p {
-        font-size: 16px !important;
+    .contacts-main p,
+    #contactOverlay p {
+        font-size: 16px;
     }
 
-    span {
-        font-size: 16px !important;
+    .contacts-main span,
+    #contactOverlay span {
+        font-size: 16px;
     }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 32px !important;
+
+    .contacts-main h1,
+    #contactOverlay h1 {
+        font-size: 32px;
     }
 
-    h2 {
-        font-size: 28px !important;
+    .contacts-main h2,
+    #contactOverlay h2 {
+        font-size: 28px;
     }
 
-    h3 {
-        font-size: 24px !important;
+    .contacts-main h3,
+    #contactOverlay h3 {
+        font-size: 24px;
     }
 
-    h4 {
-        font-size: 20px !important;
+    .contacts-main h4,
+    #contactOverlay h4 {
+        font-size: 20px;
     }
 
-    h5 {
-        font-size: 16px !important;
+    .contacts-main h5,
+    #contactOverlay h5 {
+        font-size: 16px;
     }
 
-    h6 {
-        font-size: 16px !important;
+    .contacts-main h6,
+    #contactOverlay h6 {
+        font-size: 16px;
     }
 
-    p {
-        font-size: 16px !important;
+    .contacts-main p,
+    #contactOverlay p {
+        font-size: 16px;
     }
 
-    span {
-        font-size: 16px !important;
+    .contacts-main span,
+    #contactOverlay span {
+        font-size: 16px;
     }
 }
 
 @media (max-width: 320px) {
-    h1 {
-        font-size: 28px !important;
+
+    .contacts-main h1,
+    #contactOverlay h1 {
+        font-size: 28px;
     }
 
-    h2 {
-        font-size: 24px !important;
+    .contacts-main h2,
+    #contactOverlay h2 {
+        font-size: 24px;
     }
 
-    h3 {
-        font-size: 20px !important;
+    .contacts-main h3,
+    #contactOverlay h3 {
+        font-size: 20px;
     }
 
-    h4 {
-        font-size: 18px !important;
+    .contacts-main h4,
+    #contactOverlay h4 {
+        font-size: 18px;
     }
 
-    h5 {
-        font-size: 16px !important;
+    .contacts-main h5,
+    #contactOverlay h5 {
+        font-size: 16px;
     }
 
-    h6 {
-        font-size: 16px !important;
+    .contacts-main h6,
+    #contactOverlay h6 {
+        font-size: 16px;
     }
 
-    p {
-        font-size: 16px !important;
+    .contacts-main p,
+    #contactOverlay p {
+        font-size: 16px;
     }
 
-    span {
-        font-size: 16px !important;
+    .contacts-main span,
+    #contactOverlay span {
+        font-size: 16px;
     }
 }
 

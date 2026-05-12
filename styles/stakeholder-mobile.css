@@ -130,6 +130,12 @@
 
 }
 
+@media (max-width: 768px) {
+    .request-shell>.stakeholder-legal-part {
+        margin-top: 42px;
+    }
+}
+
 @media (max-width: 386px) {
     .request-alert-box {
         padding: 8px 8px;

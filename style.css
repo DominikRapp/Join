@@ -121,8 +121,8 @@
     line-height: 1.4;
   }
 
-  #landscape-overlay h2 {
-    display: flex !important;
+  #landscape-overlay .landscape-overlay-message h2 {
+    display: flex;
   }
 }
 

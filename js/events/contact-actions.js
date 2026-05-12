@@ -28,16 +28,6 @@ async function saveFirebaseData({ path, data }) {
 }
 
 /**
- * Builds the Firebase URL for a given path.
- * 
- * @param {string} path - Firebase path segment.
- * @returns {string} Fully qualified Firebase URL.
- */
-function buildFirebaseUrl(path) {
-    return `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
-}
-
-/**
  * Sends the request to Firebase (PUT or DELETE).
  * 
  * @param {string} url - The Firebase URL.

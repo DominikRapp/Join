@@ -1,8 +1,8 @@
 @media (max-width: 1480px) {
-  .summary-wrapper {
+  .main-content .summary-wrapper {
     max-width: 640px;
     height: 100%;
-    row-gap: 32px !important;
+    row-gap: 32px;
     justify-content: center;
   }
 
@@ -35,8 +35,8 @@
 }
 
 @media (max-height: 1020px) {
-  .smr-margin {
-    height: fit-content !important;
+  .main-content .smr-margin {
+    height: fit-content;
   }
 }
 
@@ -89,8 +89,8 @@
     }
   }
 
-  .container.smr-margin {
-    padding: 46px 0 !important;
+  .main-content .container.smr-margin {
+    padding: 46px 0;
     justify-content: center;
     height: calc(100vh - 176px);
   }
@@ -131,26 +131,26 @@
     flex-direction: column;
   }
 
-  .button-field {
-    width: calc(448.0px + (100vw - 480.0px) * 0.66667) !important;
-    height: calc(450px + (100vw - 480px) * 0.4375) !important;
+  .main-content .button-field {
+    width: calc(448.0px + (100vw - 480.0px) * 0.66667);
+    height: calc(450px + (100vw - 480px) * 0.4375);
 
     .btn-row {
-      width: calc(448px + (100vw - 480px) * 0.40972) !important;
-      height: calc(142px + (100vw - 480px) * 0.14583) !important;
+      width: calc(448px + (100vw - 480px) * 0.40972);
+      height: calc(142px + (100vw - 480px) * 0.14583);
     }
   }
 
-  .summary-btn {
-    width: calc(212px + (100vw - 480px) * 0.20139) !important;
+  .main-content .summary-btn {
+    width: calc(212px + (100vw - 480px) * 0.20139);
     height: calc(128px + (100vw - 480px) * 0.13889);
 
     &.middle {
-      width: calc(250px + (100vw - 350px) * 0.28472) !important;
+      width: calc(250px + (100vw - 350px) * 0.28472);
     }
 
     &.last {
-      width: calc(134px + (100vw - 480px) * 0.125) !important;
+      width: calc(134px + (100vw - 480px) * 0.125);
     }
   }
 
@@ -222,8 +222,8 @@
 }
 
 @media (max-width: 480px) {
-  .container.smr-margin {
-    padding: 46px 0 !important;
+  .main-content .container.smr-margin {
+    padding: 46px 0;
     justify-content: center;
   }
 
@@ -241,26 +241,26 @@
     }
   }
 
-  .button-field {
-    width: calc(286px + (100vw - 320px) * 1.0125) !important;
-    height: calc(432px + (100vw - 320px) * 0.1125) !important;
+  .main-content .button-field {
+    width: calc(286px + (100vw - 320px) * 1.0125);
+    height: calc(432px + (100vw - 320px) * 0.1125);
 
     .btn-row {
-      width: calc(286px + (100vw - 320px) * 1.0125) !important;
-      height: 142px !important;
+      width: calc(286px + (100vw - 320px) * 1.0125);
+      height: 142px;
     }
   }
 
-  .summary-btn {
-    width: calc(130px + (100vw - 320px) * 0.5125) !important;
+  .main-content .summary-btn {
+    width: calc(130px + (100vw - 320px) * 0.5125);
     height: 128px;
 
     &.middle {
-      width: calc(287px + (100vw - 480px) * 0.62025) !important;
+      width: calc(287px + (100vw - 480px) * 0.62025);
     }
 
     &.last {
-      width: clamp(85px, calc(85px + (100vw - 320px) * 0.30625), 134px) !important;
+      width: clamp(85px, calc(85px + (100vw - 320px) * 0.30625), 134px);
     }
   }
 

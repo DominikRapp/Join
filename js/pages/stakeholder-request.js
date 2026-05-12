@@ -1,6 +1,6 @@
-const FIREBASE_BASE_URL = 'https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app';
 const REQUEST_LIMIT_PATH = 'emailRequestLimit';
 const ISSUE_COLLECTOR_PATH = 'issueCollector';
+const ISSUE_COLLECTOR_CONFIG = window.ISSUE_COLLECTOR_FALLBACK_CONFIG;
 
 document.addEventListener('DOMContentLoaded', initStakeholderRequestPage);
 
@@ -38,7 +38,7 @@ async function ensureCurrentRequestLimitData(requestData) {
     }
     const resetData = { dailyLimit: requestData.dailyLimit || 10, currentDate: getTodayKey(), requestCount: 0, };
     try {
-        await fetch(`${FIREBASE_BASE_URL}/${REQUEST_LIMIT_PATH}.json`, {
+        await fetch(buildFirebaseUrl(REQUEST_LIMIT_PATH), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(resetData),
@@ -54,14 +54,17 @@ async function ensureCurrentRequestLimitData(requestData) {
  */
 async function getIssueCollectorData() {
     try {
-        const response = await fetch(`${FIREBASE_BASE_URL}/${ISSUE_COLLECTOR_PATH}.json`);
+        const response = await fetch(buildFirebaseUrl(ISSUE_COLLECTOR_PATH));
         if (!response.ok) {
             throw new Error(`Firebase request failed: ${response.status}`);
         }
         const data = await response.json();
-        return { email: data?.email || 'albachi@gmx.at', mailSubject: data?.mailSubject || 'New Request', };
+        return {
+            email: data?.email || ISSUE_COLLECTOR_CONFIG.email,
+            mailSubject: data?.mailSubject || ISSUE_COLLECTOR_CONFIG.mailSubject,
+        };
     } catch (error) {
-        return { email: 'albachi@gmx.at', mailSubject: 'New Request', };
+        return ISSUE_COLLECTOR_CONFIG;
     }
 }
 
@@ -108,7 +111,7 @@ function areRequiredElementsAvailable(elements) {
  */
 async function getRequestLimitData() {
     try {
-        const response = await fetch(`${FIREBASE_BASE_URL}/${REQUEST_LIMIT_PATH}.json`);
+        const response = await fetch(buildFirebaseUrl(REQUEST_LIMIT_PATH));
         if (!response.ok) {
             throw new Error(`Firebase request failed: ${response.status}`);
         }

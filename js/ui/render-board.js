@@ -264,7 +264,7 @@ async function triggerFirebaseUpdate(taskId, firebaseColumnId) {
   const updatedTask = { ...task, columnID: firebaseColumnId, updatedAt: new Date().toLocaleDateString("de-DE"), };
   try {
     const response = await fetch(
-      `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/tasks/${taskId}.json`,
+      buildFirebaseUrl(`tasks/${taskId}`),
       { method: "PUT", headers: { "Content-Type": "application/json", }, body: JSON.stringify(updatedTask), }
     );
     if (!response.ok) {
@@ -295,7 +295,7 @@ async function createStatusNotification(taskId, previousColumnId, newColumnId) {
   const notificationData = { taskId, taskTitle: task.title || "Task", creatorName: task.creatorName || "", creatorEmail: task.creatorEmail, creatorType: task.creatorType, creatorSource: task.creatorSource || "", previousColumnId, newColumnId, createdAt: new Date().toISOString(), processed: false, };
   try {
     const response = await fetch(
-      `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/statusNotifications/${notificationId}.json`,
+      buildFirebaseUrl(`statusNotifications/${notificationId}`),
       { method: "PUT", headers: { "Content-Type": "application/json", }, body: JSON.stringify(notificationData), }
     );
     if (!response.ok) { throw new Error(`Status notification failed: ${response.status}`); }

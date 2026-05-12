@@ -158,9 +158,13 @@ a {
  * Adjustments for header layout, element visibility, and dropdown positioning on larger tablets.
  */
 @media (max-width: 1024px) {
-    header {
+    body>header {
         padding: 2px 40px;
-        height: 80px !important;
+        height: 80px;
+    }
+
+    header {
+        padding: 2px 16px;
     }
 
     header h2 {
@@ -188,15 +192,15 @@ a {
         height: 185px;
     }
 
-    .join-logo-header {
-        display: block !important;
+    header .join-logo-header {
+        display: block;
         height: 40px;
         width: auto;
     }
 
     .dropdown-help {
-    display: block;
-}
+        display: block;
+    }
 }
 
 /*
@@ -207,10 +211,6 @@ a {
     .dropdown-menu {
         top: 40px;
         right: -10px;
-    }
-
-    header {
-        padding: 2px 16px;
     }
 
     .header-profile {

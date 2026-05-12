@@ -58,7 +58,7 @@
         font-size: 18px;
     }
 
-    .welcome-legal-part {
-        margin-top: 32px !important;
+    .content-wrapper-idx>.legal-part.welcome-legal-part {
+        margin-top: 32px;
     }
 }

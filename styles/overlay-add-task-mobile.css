@@ -52,8 +52,8 @@
         font-size: 16px;
     }
 
-    #assigned-to-options-container {
-        font-size: 16px !important;
+    #add-task-form #assigned-to-options-container {
+        font-size: 16px;
     }
 
     .contact-option {
@@ -76,8 +76,8 @@
         padding: 16px 10px;
     }
 
-    #assigned-to-options-container {
-        font-size: 20px !important;
+    #add-task-form #assigned-to-options-container {
+        font-size: 20px;
     }
 
     .contact-option {
@@ -184,12 +184,13 @@
         flex-direction: column-reverse;
     }
 
-    .taskCardField.creator-section {
+    #overlay-task-detail .taskCardField.creator-section,
+    #overlay-task-detail-edit .taskCardField.creator-section {
         display: flex;
         gap: 8px;
-        align-items: flex-end !important;
+        align-items: flex-end;
         margin-bottom: 10px;
-        justify-content: flex-start !important;
+        justify-content: flex-start;
     }
 
     .content {
@@ -210,8 +211,8 @@
         font-size: 16px;
     }
 
-    .input-field-subtask {
-        font-size: 16px !important;
+    #add-task-form .input-field-subtask {
+        font-size: 16px;
     }
 
     .priority-button-container {
@@ -223,12 +224,12 @@
         font-size: 16px;
     }
 
-    .contact-input {
-        font-size: 16px !important;
+    #add-task-form .select-wrapper .contact-input {
+        font-size: 16px;
     }
 
-    #assigned-to-options-container {
-        font-size: 16px !important;
+    #add-task-form .select-wrapper .contact-input {
+        font-size: 16px;
     }
 
     .input-field-subtask {
@@ -239,12 +240,13 @@
         font-size: 16px;
     }
 
-    #category-options-container {
-        font-size: 16px !important;
+    #add-task-form #category-options-container {
+        font-size: 16px;
     }
 
-    .select-wrapper {
-        height: 48px !important;
+    #add-task-form .select-wrapper.input-field,
+    #add-task-form .select-wrapper.z-index-10 {
+        height: 48px;
     }
 
     .form-fill-part {
@@ -269,21 +271,22 @@
         width: 80%;
     }
 
-    .create-btn {
-        font-size: 16px !important;
+    #buttons-area-add-task .create-btn {
+        font-size: 16px;
     }
 
-    .clear-btn {
-        font-size: 16px !important;
+    #buttons-area-add-task .clear-btn {
+        font-size: 16px;
     }
 
-    .autofill-mobile-btn {
+    #add-task-form .autofill-mobile-btn,
+    #buttons-area-add-task .autofill-mobile-btn {
         margin-bottom: 8px;
-        font-size: 16px !important;
+        font-size: 16px;
     }
 
-    .subtask-list::before {
-        margin-left: 8px !important;
+    #add-task-form .subtask-list::before {
+        margin-left: 8px;
     }
 }
 
@@ -294,8 +297,11 @@
 }
 
 @media (max-width: 600px) {
-    .close-modal-btn {
-        top: 10px !important;
+
+    #overlay .close-modal-btn,
+    #overlay-task-detail .close-modal-btn,
+    #overlay-task-detail-edit .close-modal-btn {
+        top: 10px;
     }
 }
 
@@ -312,13 +318,14 @@
         width: 60px;
     }
 
-    .titleBar {
+    #overlay-task-detail .titleBar,
+    #overlay-task-detail-edit .titleBar {
         display: flex;
         align-items: center;
         font-weight: bold;
         font-size: 22px;
         margin-bottom: 10px;
-        gap: 14px !important;
+        gap: 14px;
     }
 }
 
@@ -333,13 +340,16 @@
 
 @media (max-width: 390px) {
 
-    .task-ai-generated-badge {
-        width: 150px !important;
+    #overlay-task-detail .task-ai-generated-badge,
+    #overlay-task-detail-edit .task-ai-generated-badge {
+        width: 150px;
     }
 }
 
 @media (max-width: 345px) {
-    .close-modal-btn {
-        top: 40px !important;
+    #overlay .close-modal-btn,
+    #overlay-task-detail .close-modal-btn,
+    #overlay-task-detail-edit .close-modal-btn {
+        top: 40px;
     }
 }

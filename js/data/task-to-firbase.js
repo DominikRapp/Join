@@ -130,7 +130,7 @@ async function sendObject(pushObjectId, rawNewObject) {
  * @param {object} data - object containing all task details
  */
 async function saveToFirebase(path, data) {
-  const url = `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
+  const url = buildFirebaseUrl(path);
   try {
     const response = await fetch(url, {
       method: data === null ? "DELETE" : "PUT",

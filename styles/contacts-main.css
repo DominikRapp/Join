@@ -167,10 +167,10 @@ html {
     transform: translateX(0);
 }
 
-.contact-details-card.no-animation {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
+.contacts-main .contacts-details .contact-details-card.no-animation {
+    opacity: 1;
+    transform: none;
+    transition: none;
 }
 
 .contact-details-header {
@@ -239,12 +239,15 @@ html {
  * Utility Classes & Responsiveness
  * General utility classes for hiding elements and styles related to touch/drag interactions and responsive design.
  */
-.hidden {
-    display: none !important;
+.contacts-main .hidden,
+.overlay-wrapper.hidden,
+.contact-success-msg.hidden {
+    display: none;
 }
 
-.drag-scroll-active {
-    cursor: grabbing !important;
+.contacts-sidebar.drag-scroll-active,
+.contacts-list.drag-scroll-active {
+    cursor: grabbing;
     user-select: none;
 }
 

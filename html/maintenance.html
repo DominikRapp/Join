@@ -27,7 +27,7 @@
 
   <button id="startCleanUp" onclick="startCleanUp();">start Clean up</button>
 
-
+  <script src="../js/data/firebase-config.js"></script>
   <script>
     let localData = null;
 
@@ -37,7 +37,7 @@
     }
 
     async function getFirebaseData(path = "") {
-      const url = 'https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/' + path + '.json';
+      const url = buildFirebaseUrl(path);
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -53,7 +53,7 @@
     }
 
     async function saveToFirebase(path, data) {
-      const url = `https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/${path}.json`;
+      const url = buildFirebaseUrl(path);
       try {
         const response = await fetch(url, {
           method: data === null ? "DELETE" : "PUT",

@@ -33,8 +33,8 @@
         font-size: 16px;
     }
 
-    #assigned-to-options-container {
-        font-size: 16px !important;
+    #add-task-form #assigned-to-options-container {
+        font-size: 16px;
     }
 
     .contact-option {
@@ -65,8 +65,8 @@
         padding: 16px 10px;
     }
 
-    #assigned-to-options-container {
-        font-size: 20px !important;
+    #add-task-form #assigned-to-options-container {
+        font-size: 20px;
     }
 
     .contact-option {
@@ -178,8 +178,8 @@
         font-size: 16px;
     }
 
-    .contact-input {
-        font-size: 16px !important;
+    #add-task-form .select-wrapper .contact-input {
+        font-size: 16px;
     }
 
     .contact-option {
@@ -190,8 +190,8 @@
         gap: 4px;
     }
 
-    #assigned-to-options-container {
-        font-size: 16px !important;
+    #add-task-form #assigned-to-options-container {
+        font-size: 16px;
     }
 
     .input-field-subtask {
@@ -202,12 +202,12 @@
         font-size: 16px;
     }
 
-    #category-options-container {
-        font-size: 16px !important;
+    #add-task-form #category-options-container {
+        font-size: 16px;
     }
 
-    .select-wrapper {
-        height: 48px !important;
+    #add-task-form .select-wrapper.input-field {
+        height: 48px;
     }
 
     .form-buttons-part {

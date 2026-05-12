@@ -3,8 +3,8 @@
  * @returns {Promise<object|null>} The Firebase data object or null if an error occurs.
  */
 export async function getFirebaseData() {
-  const URL_FIREBASE_JOIN =
-    "https://mein-join-d19ba-default-rtdb.europe-west1.firebasedatabase.app/.json";
+  const URL_FIREBASE_JOIN = buildFirebaseUrl();
+
   try {
     const RESPONSE_FIREBASE = await fetch(URL_FIREBASE_JOIN);
     if (!RESPONSE_FIREBASE.ok) {

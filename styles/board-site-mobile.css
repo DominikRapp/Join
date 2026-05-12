@@ -179,8 +179,8 @@
     min-width: 260px;
   }
 
-  .task-category {
-    padding: 2px !important;
+  .task-card .task-category {
+    padding: 2px;
   }
 
   .content {
@@ -239,8 +239,9 @@
     font-size: 16px;
   }
 
-  .select-wrapper {
-    height: 48px !important;
+  #add-task-form .select-wrapper.input-field,
+  #add-task-form .select-wrapper.z-index-10 {
+    height: 48px;
   }
 
   .form-buttons-part {
@@ -304,8 +305,8 @@
     padding: 8px;
   }
 
-  .task-content {
-    width: 100% !important;
+  .task-card .task-content {
+    width: 100%;
   }
 }
 

@@ -34,7 +34,7 @@ body {
   height: 700px;
   display: flex;
   flex-direction: column;
-  row-gap: 48px !important;
+  row-gap: 48px;
 }
 
 .smry-title {

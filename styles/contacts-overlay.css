@@ -26,7 +26,7 @@
 }
 
 .overlay-wrapper.hidden {
-    display: none !important;
+    display: none;
 }
 
 .overlay-content {
@@ -174,11 +174,17 @@
     pointer-events: none;
 }
 
-input.input-error,
-textarea.input-error,
-select.input-error {
-    border: 1px solid var(--red) !important;
-    outline: none !important;
+.input-wrapper input.input-error,
+.input-wrapper input.input-error:hover,
+.input-wrapper input.input-error:focus,
+.input-wrapper textarea.input-error,
+.input-wrapper textarea.input-error:hover,
+.input-wrapper textarea.input-error:focus,
+.input-wrapper select.input-error,
+.input-wrapper select.input-error:hover,
+.input-wrapper select.input-error:focus {
+    border: 1px solid var(--red);
+    outline: none;
 }
 
 .overlay-actions {
@@ -245,7 +251,7 @@ select.input-error {
     }
 
     .overlay-right .overlay-close {
-        display: none !important;
+        display: none;
     }
 
     .overlay-close-mobile-wrapper {
@@ -298,10 +304,10 @@ select.input-error {
         padding-top: 0px;
     }
 
-    .overlay-avatar-mobile {
-        width: 120px !important;
-        height: 120px !important;
-        font-size: 47px !important;
+    .overlay-wrapper .overlay-content .overlay-avatar-mobile {
+        width: 120px;
+        height: 120px;
+        font-size: 47px;
         position: fixed;
         display: flex;
         top: 250px;

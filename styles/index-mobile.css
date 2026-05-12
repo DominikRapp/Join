@@ -7,10 +7,10 @@
 }
 
 @media (max-width: 1024px) {
-  .signup-title > a {
+  .signup-title>a {
     height: 122px;
 
-    > img {
+    >img {
       height: calc(98px + (100vw - 768px) * 0.09375);
     }
   }
@@ -39,6 +39,7 @@
       transform: translate(-50%, -50%) scale(3);
       z-index: 10;
     }
+
     100% {
       top: 28px;
       left: calc(0px + (100vw - 480px) * 0.11806);
@@ -55,6 +56,7 @@
     0% {
       fill: var(--white);
     }
+
     100% {
       fill: var(--dark);
     }
@@ -65,9 +67,11 @@
       background-color: var(--dark);
       z-index: 5;
     }
+
     20% {
       background-color: var(--dark);
     }
+
     100% {
       background-color: rgba(255, 255, 255, 0);
       z-index: 1;
@@ -94,13 +98,12 @@
     display: none;
   }
 
-  .signup-title
-  {
+  .signup-title {
     height: 80px;
     margin-top: 16px;
     margin-bottom: 38px;
 
-    > a > img {
+    >a>img {
       height: 80px;
       margin-left: calc(14px + (100vw - 480px) * 0.21528);
     }
@@ -128,12 +131,12 @@
     }
 
     .title {
-      > h1 {
+      >h1 {
         font-size: clamp(48px, calc(48px + (100vw - 488px) * 0.04643), 61px);
         margin-bottom: 14px;
       }
 
-      > svg {
+      >svg {
         width: calc(52vw - 154px);
       }
     }
@@ -147,21 +150,21 @@
   .acceptPP {
     margin-bottom: 32px;
   }
-  
+
   .login-btns {
     flex-direction: column;
     row-gap: 21px;
     align-items: center;
- 
-    > .btn:first-of-type,
-    > .btn:nth-of-type(2),
-    > .signup-now {
+
+    >.btn:first-of-type,
+    >.btn:nth-of-type(2),
+    >.signup-now {
       width: 182px;
       font-weight: 600;
       font-size: 16px;
       padding: 16px 24px;
-    } 
-  
+    }
+
     .btn {
       width: 182px;
       font-weight: 500;
@@ -177,21 +180,23 @@
     align-items: center;
     column-gap: 35px;
 
-    > p {
+    >p {
       letter-spacing: 0.6px;
     }
 
-    > button {
+    >button {
       padding: 15px 23px;
     }
   }
 
-  .legal-part {
-    margin-top: 42px!important;
+  .content-wrapper-idx>.legal-part,
+  .content-wrapper-sgn>.legal-part,
+  .content-wrapper-idx>.welcome-legal-part {
+    margin-top: 42px;
+  }
 
-    &.lp-sgn {
-      margin-top: 0!important; 
-    }
+  .content-wrapper-sgn>.legal-part.lp-sgn {
+    margin-top: 0;
   }
 }
 
@@ -203,6 +208,7 @@
       transform: translate(-50%, -50%) scale(3);
       z-index: 10;
     }
+
     100% {
       top: 28px;
       left: 14px;
@@ -211,7 +217,7 @@
     }
   }
 
-  .title > h1 {
+  .title>h1 {
     margin-bottom: 14px;
   }
 }
@@ -220,7 +226,7 @@
   .login-inputs {
     width: calc(403px + (100vw - 480px) * 1.05);
 
-    > .input-frame {
+    >.input-frame {
       width: 100%;
     }
   }
@@ -228,14 +234,14 @@
   .s-up-margins {
     width: calc(0.4vw + 446.08px);
 
-    > .input-frame {
-    width: 100%;
+    >.input-frame {
+      width: 100%;
     }
   }
 }
 
 @media (max-width: 480px) {
-  .signup-title > a > img {
+  .signup-title>a>img {
     margin-left: 14px;
   }
 
@@ -246,7 +252,7 @@
     width: 95%;
     margin-top: 144px;
     margin-bottom: 55px;
-    
+
     &.signup-height {
       width: 95%;
       padding: 32px 0;
@@ -256,11 +262,11 @@
     .blue-arrow {
       left: calc(20px + (100vw - 320px) * 0.2);
     }
-  
-    .title > svg {
+
+    .title>svg {
       width: 92px;
     }
-  
+
     .s-up-margins {
       width: calc(289px + (100vw - 320px) * 0.94375);
       margin-top: 22px;
@@ -275,8 +281,8 @@
   .input-frame {
     width: 100%;
 
-    > input {
-    width: 60%;
+    >input {
+      width: 60%;
     }
   }
 }

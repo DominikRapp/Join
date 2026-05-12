@@ -248,13 +248,14 @@ body {
     transform: translateY(0);
 }
 
-.d-none {
-    display: none !important;
+.request-page .d-none,
+.request-page .request-state.d-none {
+    display: none;
 }
 
-.legal-part {
-    position: absolute;
-    bottom: 80px;
+.request-shell>.stakeholder-legal-part {
+    position: static;
+    margin-top: 84px;
 }
 
 .request-btn-check-gap {

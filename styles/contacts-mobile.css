@@ -70,8 +70,8 @@
         flex-direction: column;
     }
 
-    .add-new-contact-button-div {
-        position: fixed !important;
+    .contacts-main .contacts-sidebar .add-new-contact-button-div {
+        position: fixed;
         bottom: 10px;
         right: 24px;
         padding: 0;
@@ -119,12 +119,12 @@
         padding: 16px 16px 16px 16px;
     }
 
-    .mobile-contact-visible .contacts-sidebar {
-        display: none !important;
+    body.mobile-contact-visible .contacts-main .contacts-sidebar {
+        display: none;
     }
 
-    .mobile-contact-visible .contacts-details {
-        display: block !important;
+    body.mobile-contact-visible .contacts-main .contacts-details {
+        display: block;
     }
 
     .mobile-back-button {
@@ -262,18 +262,19 @@
         padding-left: 0;
     }
 
-    .contact-details-card {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
+    .contacts-main .contacts-details .contact-details-card {
+        opacity: 1;
+        transform: none;
+        transition: none;
     }
 
-    .overlay-wrapper.slide-in .overlay-content {
-        animation: slideInBottom 0.4s ease forwards !important;
+    .overlay-wrapper.slide-in.active .overlay-content {
+        animation: slideInBottom 0.4s ease forwards;
     }
 
+    .overlay-wrapper.slide-out.active .overlay-content,
     .overlay-wrapper.slide-out .overlay-content {
-        animation: slideOutBottom 0.4s ease forwards !important;
+        animation: slideOutBottom 0.4s ease forwards;
     }
 
     .contact-details-card {
@@ -335,8 +336,8 @@
 }
 
 @media (max-height: 780px) {
-    .overlay-content {
-        height: 95% !important;
+    .overlay-wrapper .overlay-content {
+        height: 95%;
         overflow-y: auto;
     }
 
@@ -357,9 +358,9 @@
 }
 
 @media (max-height: 600px) {
-    .overlay-avatar-mobile {
-        height: 100px !important;
-        width: 100px !important;
+    .overlay-wrapper .overlay-avatar-mobile {
+        height: 100px;
+        width: 100px;
     }
 
     .overlay-content {
