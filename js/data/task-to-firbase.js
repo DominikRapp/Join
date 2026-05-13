@@ -14,7 +14,7 @@ export async function CWDATA(receivedObject, fetchData) {
 /**
  * main function to proceed rawObject and send it to Firebase
  * @param {object} input - raw object
- * @returns object (only for console.log while working)
+ * @returns processed task object.
  */
 async function processRawObject(input) {
   let { pushObjectId, rawNewObject } = checkDataStructure(input);
@@ -110,7 +110,7 @@ function getLastKey(category) {
  * Sends object to Firebase and updates local copy (for instant rendering without new fetch)
  * @param {string} pushObjectId
  * @param {object} rawNewObject - former raw Object
- * @returns final object; only for console.log purpose.
+ * @returns final task object.
  */
 async function sendObject(pushObjectId, rawNewObject) {
   let path = `tasks/${pushObjectId}`;

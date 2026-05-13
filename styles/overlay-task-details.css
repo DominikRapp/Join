@@ -9,6 +9,9 @@
 
 .content-task {
   max-width: 450px;
+  min-height: calc(80vh - 64px);
+  display: flex;
+  flex-direction: column;
 }
 
 .taskCardField.priority-section,
@@ -32,17 +35,14 @@
   max-height: 90vh;
 }
 
-.task-category,
-.category-user-story,
-.category-technical-task,
-.category-meeting {
+#overlay-task-detail .task-category {
   display: inline-block;
   padding: 6px 18px;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .task-ai-generated-badge {
@@ -227,7 +227,9 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  margin-top: 24px;
+  margin-top: auto;
+  padding-top: 24px;
+  flex-shrink: 0;
 }
 
 .cardMenu button {
@@ -257,6 +259,10 @@
     max-width: 450px;
     border-radius: 12px;
     margin: 4px;
+  }
+
+  .content-task {
+    min-height: calc(80vh - 28px);
   }
 
   .titleText {

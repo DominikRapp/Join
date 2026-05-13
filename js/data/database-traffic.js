@@ -69,7 +69,6 @@ async function objectBuilding(requestedCategory) {
   if (!fetchedData) await getData(requestedCategory);
   setDataContainer(requestedCategory);
   let objectFields = chooseFieldsMap(requestedCategory);
-  console.log("objectFields, requestedCategory: ", objectFields, requestedCategory);
   const [pushObjectId, entryData] = createNewObject(objectFields, requestedCategory, "demoUser");
   await sendNewObject(pushObjectId, entryData, requestedCategory);
   confirmSignup();
@@ -82,7 +81,6 @@ async function objectBuilding(requestedCategory) {
 async function getData(category) {
   const data = await getFirebaseData(category);
   fetchedData = data;
-  console.log("data: ", data);
 }
 
 /**
@@ -213,8 +211,7 @@ function setNextId(category) {
  */
 function getLastKey(category) {
   if (!currentDataContainer || Object.keys(currentDataContainer).length == 0) {
-    console.log("you initialized a new category: ", category);
-    return `${category}-000`
+    return `${category}-000`;
   } else {
     const itemKeys = Object.keys(currentDataContainer);
     return itemKeys.at(-1)
@@ -249,7 +246,6 @@ function determineStoragePath(pushObjectId, requestedCategory) {
     path = `${requestedCategory}/${pushObjectId}`;
     fetchedData = fetchedData || {};
   }
-  console.log("path: ", path, "upated local data: ", fetchedData);
   return path;
 }
 
@@ -273,8 +269,6 @@ async function saveToFirebase(path, data) {
       headers: { "Content-Type": "application/json" },
       body: data === null ? undefined : JSON.stringify(data),
     });
-    const resText = await response.text();
-    console.log("Firebase response:", response.status, resText);
     if (!response.ok) {
       throw new Error("Firebase update failed: " + response.statusText);
     }
@@ -282,10 +276,3 @@ async function saveToFirebase(path, data) {
     console.error("Fetching data failed:", error);
   }
 }
-
-async function getKeys() {
-  let myData = await getFirebaseData('users', '?shallow=true');
-  console.log('keys: ', myData);
-}
-
-// getKeys();
