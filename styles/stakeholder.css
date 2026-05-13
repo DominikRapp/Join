@@ -271,3 +271,62 @@ body {
 .stakeholder-d-show-desktop {
     display: flex;
 }
+
+@media (min-width: 1025px) {
+    .request-page {
+        width: min(1668px, calc(100vw - 12px));
+        min-height: 100vh;
+        height: auto;
+        padding: 80px 76px 50px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .request-header {
+        width: 100%;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .request-shell {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .request-status-bar {
+        width: 100%;
+        max-width: 1100px;
+    }
+
+    .request-title-area {
+        width: 100%;
+        max-width: 1100px;
+    }
+
+    .request-content-area {
+        width: 100%;
+        flex: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .request-state {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .request-layout {
+        width: 100%;
+        max-width: 960px;
+        align-items: center;
+    }
+
+    .request-shell>.stakeholder-legal-part {
+        margin-top: 84px;
+    }
+}
