@@ -428,3 +428,51 @@ main {
 .d-none {
   display: none;
 }
+
+@media (min-width: 769px) {
+  .content-wrapper-idx {
+    justify-content: center;
+  }
+
+  .content-wrapper-idx main {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .welcome-dialogue-frame {
+    margin-top: 0;
+  }
+
+  .login-view {
+    position: relative;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .login-view .index-title {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-bottom: 0;
+  }
+
+  .content-wrapper-sgn {
+    justify-content: center;
+  }
+
+  .content-wrapper-sgn .signup-title {
+    position: absolute;
+    top: 80px;
+    left: 76px;
+    width: auto;
+    height: auto;
+  }
+
+  .content-wrapper-sgn .dialogue-frame.signup-height {
+    margin-top: 0;
+  }
+
+  .content-wrapper-sgn>.legal-part.lp-sgn {
+    margin-top: 84px;
+  }
+}

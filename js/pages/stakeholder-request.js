@@ -341,6 +341,8 @@ function buildMailBody(requestMode) {
         '',
         'Preferred deadline:',
         '',
+        'Subtasks:',
+        '',
         `Join Request Mode: ${modeLabel}`,
         'Join Request Source: stakeholder-page'
     ].join('\n');
